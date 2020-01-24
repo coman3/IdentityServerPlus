@@ -136,7 +136,7 @@ namespace IdentityServer.Controllers {
                 if (client.RequirePkce) {
                     // if the client is PKCE then we assume it's native, so this change in how to
                     // return the response is for better UX for the end user.
-                    return View("Redirect", returnUrl);
+                    return View("Redirect", new RedirectViewModel() { RedirectUrl = returnUrl });
                 }
             }
 

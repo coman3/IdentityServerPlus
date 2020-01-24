@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServer.Models.Account {
+namespace IdentityServer.Models {
     public class LoginInputModel {
         [Required]
         public string Username { get; set; }

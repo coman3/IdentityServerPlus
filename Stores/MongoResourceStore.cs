@@ -24,7 +24,7 @@ namespace IdentityServer.Stores
 
         private IEnumerable<IdentityResource> GetAllIdentityResources()
         {
-            return _dbRepository.All<IdentityResource>();
+            return _dbRepository.All<IdentityServer.Models.IdentityResource>();
         }
 
         public Task<ApiResource> FindApiResourceAsync(string name)
@@ -43,9 +43,9 @@ namespace IdentityServer.Stores
 
         public Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            var list = _dbRepository.Where<IdentityResource>(e => scopeNames.Contains(e.Name));
+            var list = _dbRepository.Where<IdentityServer.Models.IdentityResource>(e => scopeNames.Contains(e.Name));
 
-            return Task.FromResult(list.AsEnumerable());
+            return Task.FromResult(list.AsEnumerable().Cast<IdentityResource>());
         }
 
         public Resources GetAllResources()

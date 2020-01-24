@@ -20,7 +20,7 @@ namespace IdentityServer.Repositories
         {
             var configurationOptions = configuration.Value;
 
-            _client = new MongoClient(configurationOptions.ConnectionString);
+            _client = new MongoDB.Driver.MongoClient(configurationOptions.ConnectionString);
             _database = _client.GetDatabase(configurationOptions.Name);
             
         }

@@ -21,7 +21,6 @@ namespace IdentityServer.Extentions {
         /// <returns></returns>
         public static IIdentityServerBuilder AddClients(this IIdentityServerBuilder builder) {
             builder.Services.AddTransient<IClientStore, MongoClientStore>();
-            builder.Services.AddTransient<ICorsPolicyService, InMemoryCorsPolicyService>();
 
             return builder;
         }

@@ -1,4 +1,3 @@
-@using IdentityServer.Models.Account;
 @model RegisterViewModel
 
 <div class="login-page">
@@ -6,7 +5,7 @@
         <h1>Register</h1>
     </div>
 
-    <!--<partial name="_ValidationSummary" />-->
+    <partial name="_ValidationSummary" />
 
     <div class="row">
         <div class="col-sm-6">
@@ -17,7 +16,7 @@
                 <div class="panel-body">
 
                     <form asp-route="Register">
-
+                        <input hidden asp-for="ReturnUrl" />
                         <fieldset>
                             <div class="form-group">
                                 <label asp-for="Username"></label>

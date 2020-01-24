@@ -1,4 +1,3 @@
-@using IdentityServer.Models.Account;
 @model LoginViewModel
 
 <div class="login-page">
@@ -48,6 +47,11 @@
                                     </ul>
                                 </div>
                                 <div class="form-group">
+                                    <a class="btn btn-default"
+                                       asp-action="Register"
+                                       asp-route-returnUrl="@Model.ReturnUrl">
+                                        Register
+                                    </a>
                                     <button class="btn btn-primary" name="button" value="login">Login</button>
                                     <button class="btn btn-default" name="button" value="cancel">Cancel</button>
                                 </div>
@@ -73,7 +77,8 @@
                                     <a class="btn btn-default"
                                        asp-controller="External"
                                        asp-action="Challenge"
-                                       asp-route-provider="@provider.AuthenticationScheme">
+                                       asp-route-provider="@provider.AuthenticationScheme"
+                                       asp-route-returnUrl="@Model.ReturnUrl">
                                         @provider.DisplayName
                                     </a>
                                 </li>

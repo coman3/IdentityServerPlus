@@ -5,6 +5,9 @@ using System;
 using AspNetCore.Identity.MongoDbCore.Models;
 using IdentityServer.Extentions;
 using IdentityServer.Models;
+using IdentityServer.Services;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +17,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace IdentityServer {
     public class Startup {
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration) {
+            this.Environment = environment;
+            this.Configuration = configuration;
+
+        }
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
@@ -52,7 +60,8 @@ namespace IdentityServer {
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDBConfiguration.ConnectionString, mongoDBConfiguration.Name)
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
-
+            services.AddCors();
+            services.AddSingleton<ICorsPolicyService, CorsPolicyService>();
             var builder = services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddMongoRepository()
@@ -74,6 +83,7 @@ namespace IdentityServer {
             app.UseRouting();
 
             app.UseIdentityServer();
+            app.UseCors();
 
             // uncomment, if you want to add MVC
             app.UseAuthentication();
