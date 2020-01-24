@@ -159,6 +159,7 @@ namespace IdentityServer.Controllers {
                 await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(JwtClaimTypes.IdentityProvider, "local"));
 
                 if (!string.IsNullOrWhiteSpace(model.ReturnUrl)) {
+                    await _signInManager.SignInAsync(user, new AuthenticationProperties());
                     return Redirect(model.ReturnUrl);
                 }
                 return RedirectToAction("Login");

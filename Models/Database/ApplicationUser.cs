@@ -6,5 +6,9 @@ namespace IdentityServer.Models {
         public ApplicationUser() : base() { }
 
         public ApplicationUser(string userName, string email) : base(userName, email) { }
+
+        public bool Provisioned { get; set; } = false;
+
+
     }
 }

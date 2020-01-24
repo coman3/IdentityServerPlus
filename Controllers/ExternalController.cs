@@ -135,11 +135,8 @@ namespace IdentityServer.Controllers {
             // it doesn't expose an API to issue additional claims from the login workflow
             var principal = await _signInManager.CreateUserPrincipalAsync(user);
             additionalLocalClaims.AddRange(principal.Claims);
-            var principalValue = principal.FindFirst(JwtClaimTypes.Name)?.Value;
-            var name = principalValue == null ? user.Id.ToString() : principalValue;
 
-            var isuser = new IdentityServerUser(name) {
-                DisplayName = name,
+            var isuser = new IdentityServerUser(user.Id.ToString()) {
                 IdentityProvider = provider,
                 AdditionalClaims = additionalLocalClaims
             };
@@ -154,7 +151,7 @@ namespace IdentityServer.Controllers {
 
             // check if external login is in the context of an OIDC request
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), name, true, context?.ClientId));
+            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), user.Id.ToString(), true, context?.ClientId));
 
             if (context != null) {
                 var client = await _clientStore.FindClientByIdAsync(context.ClientId);
