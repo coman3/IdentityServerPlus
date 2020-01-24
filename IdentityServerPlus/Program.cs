@@ -2,8 +2,12 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using IdentityServerPlus.Services;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -11,6 +15,18 @@ using System;
 
 namespace IdentityServer
 {
+
+    public static class SettingsinstallerExtensions
+    {
+        public static IWebHostBuilder ConfigureSettings(this IWebHostBuilder builder)
+        {
+            return builder.ConfigureServices((context, services) =>
+            {
+                services.AddSingleton<PluginManager>(ctx => new PluginManager(ctx.GetService<ILogger<PluginManager>>()));
+            });
+        }
+    }
+
     public class Program
     {
         public static int Main(string[] args)
@@ -41,12 +57,10 @@ namespace IdentityServer
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseSerilog();
-                });
+        public static IWebHostBuilder CreateHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+            .UseSerilog()
+            .UseStartup<Startup>()
+            .ConfigureSettings();
     }
 }

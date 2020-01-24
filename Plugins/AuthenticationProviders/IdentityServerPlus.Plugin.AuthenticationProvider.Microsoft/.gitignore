@@ -3,5 +3,3 @@
 ################################################################################
 
 /.vs/IdentityServer/v16
-/Plugins/AuthenticationProviders/IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft/bin/Debug/netcoreapp3.1
-/Plugins/AuthenticationProviders/IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft/obj

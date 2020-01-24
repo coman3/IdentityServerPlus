@@ -9,6 +9,8 @@ using IdentityServer.Services;
 using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
+using IdentityServerPlus.Models;
+using IdentityServerPlus.Services;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,51 +18,46 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace IdentityServer {
-    public class Startup {
-        public Startup(IWebHostEnvironment environment, IConfiguration configuration) {
-            this.Environment = environment;
-            this.Configuration = configuration;
+namespace IdentityServer
+{
+    public class Startup
+    {
 
-        }
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
+        public PluginManager PluginManager { get; }
 
-        public Startup(IWebHostEnvironment environment) {
+        public Startup(IWebHostEnvironment environment, PluginManager pluginManager)
+        {
             Environment = environment;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional : true, reloadOnChange : true)
-                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional : true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            PluginManager = pluginManager;
+
         }
 
-        public void ConfigureServices(IServiceCollection services) {
-            // uncomment, if you want to add an MVC-based UI
+        public void ConfigureServices(IServiceCollection services)
+        {
+            PluginManager.Configure(Configuration.GetSection("PluginManager").Get<PluginManagerConfiguration>());
+            PluginManager.CollectAll(services.BuildServiceProvider());
+
             services.AddControllersWithViews();
             services.AddOptions();
+
             var mongoDBConfiguration = Configuration.GetSection("MongoDB").Get<MongoDBConfiguration>();
             services.Configure<MongoDBConfiguration>(Configuration.GetSection("MongoDB"));
             services.AddSingleton<IConfiguration>(Configuration);
 
-            // var builder = services.AddIdentityServer()
-            //     .AddInMemoryIdentityResources(Config.Ids)
-            //     .AddInMemoryApiResources(Config.Apis)
-            //     .AddInMemoryClients(Config.Clients);
-
-            services.AddAuthentication().AddOpenIdConnect("microsoft", options => {
-                options.SaveTokens = true;
-                options.Scope.Add("profile");
-                options.Scope.Add("User.Read");
-                options.ResponseType = "id_token token";
-                options.ClientId = "7d6d3978-f958-4759-887d-498b52ede1df";
-                options.ClientSecret = "DSBjc:/?V-FBGAfY64t96gm@GG=qfcct";
-                options.MetadataAddress = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837/v2.0/.well-known/openid-configuration";
-                options.Authority = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837";
-            });
+            var authentication = services.AddAuthentication();
+            PluginManager.BuildAuthentication(authentication);
+            
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDBConfiguration.ConnectionString, mongoDBConfiguration.Name)
@@ -79,8 +76,10 @@ namespace IdentityServer {
             builder.AddDeveloperSigningCredential();
         }
 
-        public void Configure(IApplicationBuilder app) {
-            if (Environment.IsDevelopment()) {
+        public void Configure(IApplicationBuilder app)
+        {
+            if (Environment.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
             }
 
@@ -94,7 +93,8 @@ namespace IdentityServer {
             // uncomment, if you want to add MVC
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapDefaultControllerRoute();
             });
         }
