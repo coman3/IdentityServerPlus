@@ -15,12 +15,14 @@ using IdentityServer4.Stores;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace IdentityServer.Controllers {
+
     [SecurityHeaders]
     [AllowAnonymous]
     public class ExternalController : Controller {
@@ -87,6 +89,8 @@ namespace IdentityServer.Controllers {
                 _logger.LogDebug("External claims: {@claims}", externalClaims);
             }
 
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
             // lookup our user and external provider info
             var(user, provider, providerUserId, claims) = await FindUserFromExternalProviderAsync(result);
             if (user == null) {
@@ -96,6 +100,27 @@ namespace IdentityServer.Controllers {
                 user = await AutoProvisionUserAsync(provider, providerUserId, claims);
             }
 
+            var modified = false;
+            if (!string.IsNullOrWhiteSpace(result.Properties.GetTokenValue("access_token"))) {
+                var accessToken = user.GetToken(provider, "access_token");
+                if (accessToken != null) {
+                    user.RemoveUserToken(accessToken);
+                }
+                user.AddUserToken(new IdentityUserToken<Guid>() { UserId = user.Id, LoginProvider = provider, Value = result.Properties.GetTokenValue("access_token"), Name = "access_token" });
+                modified = true;
+            }
+            if (!string.IsNullOrWhiteSpace(result.Properties.GetTokenValue("id_token"))) {
+                var idToken = user.GetToken(provider, "id_token");
+                if (idToken != null) {
+                    user.RemoveUserToken(idToken);
+                }
+                user.AddUserToken(new IdentityUserToken<Guid>() { UserId = user.Id, LoginProvider = provider, Value = result.Properties.GetTokenValue("id_token"), Name = "id_token" });
+
+                modified = true;
+            }
+            if (modified) {
+                await _userManager.UpdateAsync(user);
+            }
             // this allows us to collect any additonal claims or properties
             // for the specific prtotocols used and store them in the local auth cookie.
             // this is typically used to store data needed for signout from those protocols.
@@ -142,45 +167,6 @@ namespace IdentityServer.Controllers {
 
             return Redirect(returnUrl);
         }
-
-        // private async Task<IActionResult> ProcessWindowsLoginAsync(string returnUrl) {
-        //     // see if windows auth has already been requested and succeeded
-        //     var result = await HttpContext.AuthenticateAsync(AccountOptions.WindowsAuthenticationSchemeName);
-        //     if (result?.Principal is WindowsPrincipal wp) {
-        //         // we will issue the external cookie and then redirect the
-        //         // user back to the external callback, in essence, treating windows
-        //         // auth the same as any other external authentication mechanism
-        //         var props = new AuthenticationProperties() {
-        //             RedirectUri = Url.Action("Callback"),
-        //             Items = { { "returnUrl", returnUrl },
-        //             { "scheme", AccountOptions.WindowsAuthenticationSchemeName },
-        //             }
-        //         };
-
-        //         var id = new ClaimsIdentity(AccountOptions.WindowsAuthenticationSchemeName);
-        //         id.AddClaim(new Claim(JwtClaimTypes.Subject, wp.FindFirst(ClaimTypes.PrimarySid).Value));
-        //         id.AddClaim(new Claim(JwtClaimTypes.Name, wp.Identity.Name));
-
-        //         // add the groups as claims -- be careful if the number of groups is too large
-        //         if (AccountOptions.IncludeWindowsGroups) {
-        //             var wi = wp.Identity as WindowsIdentity;
-        //             var groups = wi.Groups.Translate(typeof(NTAccount));
-        //             var roles = groups.Select(x => new Claim(JwtClaimTypes.Role, x.Value));
-        //             id.AddClaims(roles);
-        //         }
-
-        //         await HttpContext.SignInAsync(
-        //             IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme,
-        //             new ClaimsPrincipal(id),
-        //             props);
-        //         return Redirect(props.RedirectUri);
-        //     } else {
-        //         // trigger windows auth
-        //         // since windows auth don't support the redirect uri,
-        //         // this URL is re-triggered when we call challenge
-        //         return Challenge(AccountOptions.WindowsAuthenticationSchemeName);
-        //     }
-        // }
 
         private async Task < (ApplicationUser user, string provider, string providerUserId, IEnumerable<Claim> claims) > FindUserFromExternalProviderAsync(AuthenticateResult result) {
             var externalUser = result.Principal;
@@ -259,8 +245,7 @@ namespace IdentityServer.Controllers {
             if (sid != null) {
                 localClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
             }
-
-            // if the external provider issued an id_token, we'll keep it for signout
+            //if the external provider issued an id_token, we'll keep it for signout
             var id_token = externalResult.Properties.GetTokenValue("id_token");
             if (id_token != null) {
                 localSignInProps.StoreTokens(new [] { new AuthenticationToken { Name = "id_token", Value = id_token } });

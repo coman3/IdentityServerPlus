@@ -6,8 +6,10 @@ using AspNetCore.Identity.MongoDbCore.Models;
 using IdentityServer.Extentions;
 using IdentityServer.Models;
 using IdentityServer.Services;
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -50,6 +52,10 @@ namespace IdentityServer {
             //     .AddInMemoryClients(Config.Clients);
 
             services.AddAuthentication().AddOpenIdConnect("microsoft", options => {
+                options.SaveTokens = true;
+                options.Scope.Add("profile");
+                options.Scope.Add("User.Read");
+                options.ResponseType = "id_token token";
                 options.ClientId = "7d6d3978-f958-4759-887d-498b52ede1df";
                 options.ClientSecret = "DSBjc:/?V-FBGAfY64t96gm@GG=qfcct";
                 options.MetadataAddress = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837/v2.0/.well-known/openid-configuration";
