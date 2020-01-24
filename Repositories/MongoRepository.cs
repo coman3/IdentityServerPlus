@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using IdentityServer.Interfaces;
+using IdentityServer.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -14,16 +16,12 @@ namespace IdentityServer.Repositories
         protected static IMongoClient _client;
         protected static IMongoDatabase _database;
 
-        /// <summary>
-        /// This Contructor leverages  .NET Core built-in DI
-        /// </summary>
-        /// <param name="optionsAccessor">Injected by .NET Core built-in Depedency Injection</param>
-        public MongoRepository(IOptions<ConfigurationOptions> optionsAccessor)
+        public MongoRepository(IOptions<MongoDBConfiguration> configuration)
         {
-            var configurationOptions = optionsAccessor.Value;
+            var configurationOptions = configuration.Value;
 
-            _client = new MongoClient(configurationOptions.MongoConnection);
-            _database = _client.GetDatabase(configurationOptions.MongoDatabaseName);
+            _client = new MongoClient(configurationOptions.ConnectionString);
+            _database = _client.GetDatabase(configurationOptions.Name);
             
         }
 
