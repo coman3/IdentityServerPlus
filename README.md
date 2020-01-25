@@ -16,7 +16,7 @@ Check out [The current project kanban for an up to date list](https://github.com
 
 Just a quick general gist of what needs to happen still (not including the done stuff), with expanded info below.
 Short term:
-- [ ] Cleanup Plugin system for more flexability (interface everything)
+- [x] Cleanup Plugin system for more flexability (interface everything)
 - [ ] Implement other external providers and provide config options for each plugin
 - [ ] Implement external provider mapping system through plugins
 - [ ] Add support for any database type through plugins
