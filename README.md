@@ -31,11 +31,6 @@ Unknown term:
 - [ ] Implement linking of external accounts to an existing account
 - [ ] Implement a User Management API, Event Management API, and or Metrics API
 
-### Plugin System
-Im mostly looking implementing a bunch of interfaces such as `IServicePlugin`, `IAppPlugin`, `IAuthenticationPlugin`, `IIdentityPlugin` which relate to `ConfigureServices`, `Configure (app)`, `AddAuthentication`, `AddIdentityServer` respectively.
-
-Also need to ensure that plugins have a 'base type' which defines the major thing its gonna do, for example `MongoDBConnector` or `SQLConnector` would be a `DatabaseConnector` and `MicrosoftLoginProvider` would be an `ExternalProvider`.
-
 ### External Providers
 All of these providers will have:
 - [ ] Support for mapping information from their claims to the current user model.
