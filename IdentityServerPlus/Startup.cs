@@ -10,7 +10,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServerPlus.Models;
-using IdentityServerPlus.Services;
+using IdentityServerPlus.Plugin.Base.Services;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,35 +45,44 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            PluginManager.Configure(Configuration.GetSection("PluginManager").Get<PluginManagerConfiguration>());
-            PluginManager.CollectAll(services.BuildServiceProvider());
+            PluginManager.Configure(Configuration);
+            PluginManager.CollectAll();
 
-            services.AddControllersWithViews();
+
+            services.AddMvc().AddControllersAsServices();
             services.AddOptions();
 
             var mongoDBConfiguration = Configuration.GetSection("MongoDB").Get<MongoDBConfiguration>();
             services.Configure<MongoDBConfiguration>(Configuration.GetSection("MongoDB"));
             services.AddSingleton<IConfiguration>(Configuration);
 
-            var authentication = services.AddAuthentication();
-            PluginManager.BuildAuthentication(authentication);
-            
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDBConfiguration.ConnectionString, mongoDBConfiguration.Name)
+
+            services.AddCors();
+            services.AddSingleton<ICorsPolicyService, CorsPolicyService>(); // Move to MongoDB Plugin
+
+
+            var authentication = services.AddAuthentication();
+            // Call IAuthenticationProvider
+            PluginManager.BuildAuthentication(authentication);
+
+
+            var identity = services.AddIdentity<ApplicationUser, ApplicationRole>() // Build a general model for application user that can be implemented into any database schema
+                .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDBConfiguration.ConnectionString, mongoDBConfiguration.Name) // Move to MongoDB Plugin
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
-            services.AddCors();
-            services.AddSingleton<ICorsPolicyService, CorsPolicyService>();
-            var builder = services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
-                .AddMongoRepository()
-                .AddClients()
-                .AddIdentityApiResources()
-                .AddPersistedGrants();
+            // Call IIdentityProvider
+            
 
-            // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+            var identityServer = services.AddIdentityServer()
+                .AddDeveloperSigningCredential() // Move to Signing Credential Plugin
+                .AddMongoRepository() // Move to MongoDB Plugin
+                .AddClients() // Move to MongoDB Plugin
+                .AddIdentityApiResources() // Move to MongoDB Plugin
+                .AddPersistedGrants(); // Move to MongoDB Plugin
+            // Call IIdentityServerProvider
+
+            //Call IServiceConfigurationProvider Services (to override any existing services if needed)
         }
 
         public void Configure(IApplicationBuilder app)
@@ -83,20 +92,22 @@ namespace IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
-            // uncomment if you want to add MVC
+            
             app.UseStaticFiles();
             app.UseRouting();
 
             app.UseIdentityServer();
             app.UseCors();
 
-            // uncomment, if you want to add MVC
+            
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
             });
+
+            // Call IAppConfigurationProvider
         }
     }
 }

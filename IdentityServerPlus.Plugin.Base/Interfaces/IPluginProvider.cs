@@ -1,14 +1,11 @@
+using IdentityServerPlus.Plugin.Base.Models;
+using System.Collections.Generic;
+
 namespace IdentityServerPlus.Plugin.Base.Interfaces {
     public interface IPluginProvider {
 
-        ProviderType GetProviderType();
+        string Name { get; }
+        string Description { get; }
 
-    }
-
-    public enum ProviderType {
-        DatabaseProvider,
-        AuthenticationProvider,
-        ThemeProvider,
-        ControllerProvider,
     }
 }

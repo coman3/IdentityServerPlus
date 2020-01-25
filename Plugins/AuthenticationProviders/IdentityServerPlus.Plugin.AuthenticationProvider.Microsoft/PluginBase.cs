@@ -1,6 +1,10 @@
 ﻿using IdentityServerPlus.Plugin.Base;
 using IdentityServerPlus.Plugin.Base.Interfaces;
+using IdentityServerPlus.Plugin.Base.Models;
+using IdentityServerPlus.Plugin.Base.Structures;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 
 namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
 {
@@ -10,17 +14,19 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
 
         public override DateTime LastUpdated => new DateTime(2020, 1, 24);
 
-        public MicrosoftAuthenticationProviderPlugin() : base("Microsoft Authentication Provider", "0.0.0.1", "MicrosoftAuthentication")
+        public MicrosoftAuthenticationProviderPlugin() : base("Microsoft Authentication Provider", "0.0.0.1")
         {
 
         }
 
-        public override IPluginProvider[] BuildProviders()
+        public override IEnumerable<ProviderItem> GetProviderTypesAndArguments(IConfiguration configuration)
         {
-            return new[]
-            {
-                new MicrosoftAuthenticationProvider(),
-            };
+            yield return new ProviderItem<MicrosoftAuthenticationProvider>();
         }
+
+        //public override IEnumerable<PluginConfigurationItem> GetPluginConfigurations()
+        //{
+        //    yield return new PluginConfigurationItem<MicrosoftAuthenticationOptions>();
+        //}
     }
 }

@@ -1,13 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
 {
-    internal class MicrosoftAuthenticationProvider : Base.AuthenticationProvider
+    internal class MicrosoftAuthenticationProvider : Base.Structures.AuthenticationProvider
     {
         public MicrosoftAuthenticationProvider() : base("Microsoft", "microsoft")
         {
+            //_options = options.Value;
         }
+
+        public override string Description => "A login provider for Microft Social and Enterprise (Office 365) Connections";
 
         public override AuthenticationBuilder Build(AuthenticationBuilder builder)
         {
