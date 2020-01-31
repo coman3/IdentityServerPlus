@@ -4,10 +4,15 @@ using IdentityServerPlus.Plugin.Base.Interfaces;
 using IdentityServerPlus.Plugin.Base.Models;
 using IdentityServerPlus.Plugin.Base.Structures;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +20,11 @@ using System.Reflection;
 
 namespace IdentityServerPlus.Plugin.Base.Services
 {
+
+    public class PluginConfig
+    {
+        public string Assembly { get; set; }
+    }
 
     public sealed class PluginManager
     {
@@ -32,23 +42,6 @@ namespace IdentityServerPlus.Plugin.Base.Services
         public void Configure(IConfiguration config)
         {
             _configuration = config;
-        }
-
-        public AuthenticationBuilder BuildAuthentication(AuthenticationBuilder builder)
-        {
-            _logger.LogInformation("Building Authentication Providers...");
-            foreach (var plugin in PluginInstances)
-            {
-                foreach (var provider in plugin.Providers.OfType<IAuthenticationProvider>())
-                {
-                    if (provider == null) continue;
-                    _logger.LogInformation("    Building Authentication Provider {0} ({1})...", provider.FriendlyName, provider.Scheme);
-                    builder = provider.Build(builder);
-                }
-            }
-            _logger.LogInformation("Built all Authentication Providers!");
-
-            return builder;
         }
 
         public void CollectAll()
@@ -75,10 +68,11 @@ namespace IdentityServerPlus.Plugin.Base.Services
 
 
             _logger.LogInformation("Searching for plugins...");
-            foreach (var plugin in directory.GetFiles().Where(x => x.Extension == ".dll"))
+            foreach (var plugin in directory.GetDirectories().Where(x => x.GetFiles().Any(c => c.Name == "plugin.json")))
             {
-                _logger.LogInformation("Found assembly file {0}. Searching for plugins...", plugin.FullName.Replace(currentAssLocation, ""));
-                var pluginAssembly = Assembly.LoadFrom(plugin.FullName);
+                _logger.LogInformation("Found plugin folder {0}. Loading Assembly File...", plugin.FullName.Replace(currentAssLocation, ""));
+                var jsonString = JsonConvert.DeserializeObject<PluginConfig>(File.ReadAllText(Path.Combine(plugin.FullName, "plugin.json")));
+                var pluginAssembly = Assembly.LoadFrom(Path.Combine(plugin.FullName, jsonString.Assembly));
                 var types = pluginAssembly.GetTypes().Where(x => x.IsSubclassOf(typeof(PluginBase)) && x.IsClass && !x.IsAbstract).ToList();
                 foreach (var type in types)
                 {
@@ -108,47 +102,94 @@ namespace IdentityServerPlus.Plugin.Base.Services
 
         }
 
+        
 
-    }
-
-    public sealed class PluginInstance
-    {
-        public Assembly Assembly { get; }
-        public Type Type { get; }
-        public string AssemblyLocation { get; }
-        public bool Activated => Instance != null;
-        public bool Injected { get; private set; }
-
-        public List<IPluginProvider> Providers { get; private set; }
-
-        public PluginBase Instance { get; private set; }
-
-        public PluginInstance(Assembly assembly, Type type)
+        public AuthenticationBuilder BuildAuthentication(AuthenticationBuilder builder)
         {
-            Assembly = assembly;
-            Type = type;
+            _logger.LogInformation("Building Authentication Providers...");
+            foreach (var plugin in PluginInstances)
+            {
+                foreach (var provider in plugin.Providers.OfType<IAuthenticationProvider>())
+                {
+                    if (provider == null) continue;
+                    _logger.LogInformation("    Building Authentication Provider {0} ({1})...", provider.FriendlyName, provider.Scheme);
+                    builder = provider.Build(builder);
+                }
+            }
+            _logger.LogInformation("Built all Authentication Providers!");
+
+            return builder;
         }
 
-        public void Activate()
+        public IdentityBuilder BuildIdentity(IdentityBuilder builder)
         {
-            Instance = Activator.CreateInstance(Type) as PluginBase;
+            _logger.LogInformation("Building Identity Providers...");
+            foreach (var plugin in PluginInstances)
+            {
+                foreach (var provider in plugin.Providers.OfType<IIdentityProvider>())
+                {
+                    if (provider == null) continue;
+                    _logger.LogInformation("    Building Identity Provider {0} (type: {1})...", provider.Name, provider.Type);
+                    builder = provider.Build(builder);
+                }
+            }
+            _logger.LogInformation("Built all Identity Providers!");
+
+            return builder;
+
         }
 
-        public IEnumerable<ProviderItem> Build(IConfiguration configuration)
+        public IIdentityServerBuilder BuildIdentityServer(IIdentityServerBuilder builder)
         {
-            
-            return Instance.GetProviderTypesAndArguments(configuration);
+            _logger.LogInformation("Building Identity Server Providers...");
+            foreach (var plugin in PluginInstances)
+            {
+                foreach (var provider in plugin.Providers.OfType<IIdentityServerProvider>())
+                {
+                    if (provider == null) continue;
+                    _logger.LogInformation("    Building Identity Server Provider {0} (type: {1})...", provider.Name, provider.Type);
+                    builder = provider.Build(builder);
+                }
+            }
+            _logger.LogInformation("Built all Identity Server Providers!");
+
+            return builder;
         }
 
-        public IPluginProvider ActivateProvider(ProviderItem item)
+        public void BuildServices(IServiceCollection services)
         {
-            if(Providers == null) Providers = new List<IPluginProvider>();
-            var provider = Activator.CreateInstance(item.Type, item.Parameters) as IPluginProvider;
-            Providers.Add(provider);
-            return provider;
+            _logger.LogInformation("Building Service Configuration Providers...");
+            foreach (var plugin in PluginInstances)
+            {
+                foreach (var provider in plugin.Providers.OfType<IServiceConfigurationProvider>())
+                {
+                    if (provider == null) continue;
+                    _logger.LogInformation("    Building Service Configuration Provider...");
+                    provider.ConfigureServices(services);
+                }
+            }
+            _logger.LogInformation("Built all Service Configuration Providers!");
         }
 
+        public void BuildAppConfiguration(IApplicationBuilder app)
+        {
+            _logger.LogInformation("Building App Configuration Providers...");
+            foreach (var plugin in PluginInstances)
+            {
+                foreach (var provider in plugin.Providers.OfType<IAppConfigurationProvider>())
+                {
+                    if (provider == null) continue;
+                    _logger.LogInformation("    Building App Configuration Provider...");
+                    provider.Configure(app);
+                }
+            }
+            _logger.LogInformation("Built all App Configuration Providers!");
+        }
 
+        public IEnumerable<TType> GetProviders<TType>()
+        {
+            return PluginInstances.SelectMany(p => p.Providers.OfType<TType>());
+        }
     }
 
 }

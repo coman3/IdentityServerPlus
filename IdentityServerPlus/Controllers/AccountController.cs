@@ -106,7 +106,7 @@ namespace IdentityServer.Controllers {
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure : true);
                 if (result.Succeeded) {
                     var user = await _userManager.FindByNameAsync(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId : context?.ClientId));
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id.ToString(), user.Email, clientId : context?.ClientId));
 
                     if (context != null) {
                         var client = await _clientStore.FindClientByIdAsync(context.ClientId);
@@ -151,7 +151,11 @@ namespace IdentityServer.Controllers {
             if (!ModelState.IsValid) {
                 return View(model);
             }
-            var user = new ApplicationUser(model.Username, model.Email);
+            var user = new ApplicationUser()
+            {
+                Email = model.Email,
+                Username = model.Username,
+            };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded) {

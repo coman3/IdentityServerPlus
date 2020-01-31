@@ -23,10 +23,5 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
         {
             yield return new ProviderItem<MicrosoftAuthenticationProvider>();
         }
-
-        //public override IEnumerable<PluginConfigurationItem> GetPluginConfigurations()
-        //{
-        //    yield return new PluginConfigurationItem<MicrosoftAuthenticationOptions>();
-        //}
     }
 }

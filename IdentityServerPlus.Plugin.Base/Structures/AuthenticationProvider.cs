@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using IdentityServer.Models;
 using IdentityServerPlus.Plugin.Base.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 
@@ -21,5 +23,11 @@ namespace IdentityServerPlus.Plugin.Base.Structures
         }
 
         public abstract AuthenticationBuilder Build(AuthenticationBuilder builder);
+        public abstract string GetProviderId(AuthenticateResult authResult);
+        public abstract ApplicationUser ProvisionUser(AuthenticateResult result);
+        public virtual Task UpdateUserAsync(ApplicationUser user, AuthenticateResult result)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

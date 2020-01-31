@@ -1,17 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <OutputType>Library</OutputType>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
+    <ProjectReference Include="..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
+    <ProjectReference Include="..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
   </ItemGroup>
 
   <ItemGroup>

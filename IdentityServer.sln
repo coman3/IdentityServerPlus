@@ -11,7 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthenticationProviders", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{119415DE-6D4C-4623-BB2D-26C6B377042D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft", "Plugins\AuthenticationProviders\IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft\IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft.csproj", "{633CED8C-E111-42D2-929E-36DFB3A76C0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft", "Plugins\AuthenticationProviders\IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft\IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft.csproj", "{633CED8C-E111-42D2-929E-36DFB3A76C0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DatabaseProviders", "DatabaseProviders", "{EDCF3CFF-3B39-4F13-B5BF-A4C47A92AE20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerPlus.Plugin.DatabaseProvider.MongoDB", "IdentityServerPlus.Plugin.DatabaseProvider.MongoDB\IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.csproj", "{563D9480-764D-42B6-9860-33F6D3DDE618}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerPlus.Models", "IdentityServerPlus.Models\IdentityServerPlus.Models.csproj", "{20C20979-005B-4F5A-AC98-4F4B740E84FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +65,30 @@ Global
 		{633CED8C-E111-42D2-929E-36DFB3A76C0F}.Release|x64.Build.0 = Release|Any CPU
 		{633CED8C-E111-42D2-929E-36DFB3A76C0F}.Release|x86.ActiveCfg = Release|Any CPU
 		{633CED8C-E111-42D2-929E-36DFB3A76C0F}.Release|x86.Build.0 = Release|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Debug|x64.Build.0 = Debug|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Debug|x86.Build.0 = Debug|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Release|x64.ActiveCfg = Release|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Release|x64.Build.0 = Release|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Release|x86.ActiveCfg = Release|Any CPU
+		{563D9480-764D-42B6-9860-33F6D3DDE618}.Release|x86.Build.0 = Release|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Debug|x64.Build.0 = Debug|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Debug|x86.Build.0 = Debug|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Release|x64.ActiveCfg = Release|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Release|x64.Build.0 = Release|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{20C20979-005B-4F5A-AC98-4F4B740E84FF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +96,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D91E2F72-0CC6-4875-821F-84FC47A04505} = {119415DE-6D4C-4623-BB2D-26C6B377042D}
 		{633CED8C-E111-42D2-929E-36DFB3A76C0F} = {D91E2F72-0CC6-4875-821F-84FC47A04505}
+		{EDCF3CFF-3B39-4F13-B5BF-A4C47A92AE20} = {119415DE-6D4C-4623-BB2D-26C6B377042D}
+		{563D9480-764D-42B6-9860-33F6D3DDE618} = {EDCF3CFF-3B39-4F13-B5BF-A4C47A92AE20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1530312F-B477-4A3D-BCC0-D4D8A9B3BBC8}

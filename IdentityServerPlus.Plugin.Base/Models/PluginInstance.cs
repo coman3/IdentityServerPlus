@@ -1,7 +1,7 @@
 ﻿using IdentityServerPlus.Plugin.Base.Interfaces;
+using IdentityServerPlus.Plugin.Base.Models;
 using IdentityServerPlus.Plugin.Base.Structures;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -33,14 +33,16 @@ namespace IdentityServerPlus.Plugin.Base.Models
 
         public IEnumerable<ProviderItem> Build(IConfiguration configuration)
         {
-
+            
             return Instance.GetProviderTypesAndArguments(configuration);
         }
 
-        public void ActivateProvider(ProviderItem item)
+        public IPluginProvider ActivateProvider(ProviderItem item)
         {
-            if (Providers == null) Providers = new List<IPluginProvider>();
-            Providers.Add(Activator.CreateInstance(item.Type, item.Parameters) as IPluginProvider);
+            if(Providers == null) Providers = new List<IPluginProvider>();
+            var provider = Activator.CreateInstance(item.Type, item.Parameters) as IPluginProvider;
+            Providers.Add(provider);
+            return provider;
         }
 
 
