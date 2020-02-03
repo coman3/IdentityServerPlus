@@ -1,15 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using IdentityServerPlus.Plugin.Base.Interfaces;
 using IdentityServerPlus.Plugin.Base.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace IdentityServerPlus.Plugin.Base.Structures
 {
-    public abstract class PluginBase
+    public abstract class PluginBase : PluginBase<PluginConfig>
     {
+        protected PluginBase(string name, string version) : base(name, version)
+        {
+        }
+    }
 
+    public abstract class PluginBase<TConfig>
+        where TConfig : PluginConfig
+    {
         /// <summary>The Display Name of this plugin</summary>
         public string Name { get; }
 
@@ -21,6 +30,10 @@ namespace IdentityServerPlus.Plugin.Base.Structures
 
         /// <summary>The Version Code of this plugin for easy updating</summary>
         public string Version { get; }
+        /// <summary>
+        /// The folder which contains the plugin
+        /// </summary>
+        public string BaseLocation { get; internal set; }
 
         protected PluginBase(string name, string version)
         {
@@ -51,5 +64,12 @@ namespace IdentityServerPlus.Plugin.Base.Structures
             return (IPluginProvider)Activator.CreateInstance(type, parameters);
 
         }
+
+        public virtual TConfig LoadConfig(string path)
+        {
+            return JsonConvert.DeserializeObject<TConfig>(ConfigurationFile);
+        }
+
+
     }
 }

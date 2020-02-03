@@ -21,11 +21,6 @@ using System.Reflection;
 namespace IdentityServerPlus.Plugin.Base.Services
 {
 
-    public class PluginConfig
-    {
-        public string Assembly { get; set; }
-    }
-
     public sealed class PluginManager
     {
         private ILogger _logger;
@@ -71,12 +66,13 @@ namespace IdentityServerPlus.Plugin.Base.Services
             foreach (var plugin in directory.GetDirectories().Where(x => x.GetFiles().Any(c => c.Name == "plugin.json")))
             {
                 _logger.LogInformation("Found plugin folder {0}. Loading Assembly File...", plugin.FullName.Replace(currentAssLocation, ""));
-                var jsonString = JsonConvert.DeserializeObject<PluginConfig>(File.ReadAllText(Path.Combine(plugin.FullName, "plugin.json")));
-                var pluginAssembly = Assembly.LoadFrom(Path.Combine(plugin.FullName, jsonString.Assembly));
+                var pluginConfig = JsonConvert.DeserializeObject<PluginConfig>(File.ReadAllText(Path.Combine(plugin.FullName, "plugin.json")));
+                var pluginAssembly = Assembly.LoadFrom(Path.Combine(plugin.FullName, pluginConfig.Assembly));
                 var types = pluginAssembly.GetTypes().Where(x => x.IsSubclassOf(typeof(PluginBase)) && x.IsClass && !x.IsAbstract).ToList();
                 foreach (var type in types)
                 {
-                    var instance = new PluginInstance(pluginAssembly, type);
+                    var instance = new PluginInstance(pluginAssembly, type, pluginConfig) { AssemblyLocation = plugin.FullName };
+                    
                     _logger.LogInformation("    Activating Plugin: {0}", type.Name);
                     instance.Activate();
                     PluginInstances.Add(instance);
