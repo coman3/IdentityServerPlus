@@ -11,8 +11,8 @@
     <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
-    <ProjectReference Include="..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
+    <ProjectReference Include="..\..\..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
+    <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="plugin.json">
