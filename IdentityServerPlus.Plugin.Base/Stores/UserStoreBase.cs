@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Models;
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
