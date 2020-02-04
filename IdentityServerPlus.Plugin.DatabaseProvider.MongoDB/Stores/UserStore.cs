@@ -1,4 +1,5 @@
 ﻿using IdentityServer.Models;
+using IdentityServerPlus.Plugin.Base.Stores;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -14,21 +15,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 {
-    internal class UserStore<TUser> : IUserLoginStore<TUser>,
-        IUserStore<TUser>,
-        IAsyncDisposable,
-        IDisposable,
-        IUserClaimStore<TUser>,
-        IUserPasswordStore<TUser>,
-        IUserSecurityStampStore<TUser>,
-        IUserEmailStore<TUser>,
-        IUserLockoutStore<TUser>,
-        IUserPhoneNumberStore<TUser>,
-        IQueryableUserStore<TUser>,
-        IUserTwoFactorStore<TUser>,
-        IUserAuthenticationTokenStore<TUser>,
-        IUserAuthenticatorKeyStore<TUser>,
-        IUserTwoFactorRecoveryCodeStore<TUser>
+    internal class UserStore<TUser> : UserStoreBase<TUser>
         where TUser : ApplicationUser
     {
 
@@ -41,27 +28,9 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             _users = applicationDatabase.GetCollection<TUser>("users");
             _logger = logger;
         }
-        IQueryable<TUser> IQueryableUserStore<TUser>.Users => _users.AsQueryable();
+        public override IQueryable<TUser> Users => _users.AsQueryable();
 
-
-        async Task IUserClaimStore<TUser>.AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
-        {   
-            var newClaims = claims.Select(c => new ApplicationUserClaim(c)).ToList();
-            user.Claims.AddRange(newClaims);
-        }
-
-        async Task IUserLoginStore<TUser>.AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken)
-        {
-            var provider = new ApplicationProviderInfo(login) { ProviderLinkedAt = DateTime.UtcNow };
-            user.Providers.Add(provider);
-        }
-
-        async Task<int> IUserTwoFactorRecoveryCodeStore<TUser>.CountCodesAsync(TUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<IdentityResult> IUserStore<TUser>.CreateAsync(TUser user, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             try
@@ -80,22 +49,22 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             }
         }
 
-        async Task<IdentityResult> IUserStore<TUser>.DeleteAsync(TUser user, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             UserCache = null;
         }
 
-        public async ValueTask DisposeAsync()
+        public override async ValueTask DisposeAsync()
         {
             this.Dispose();
         }
 
-        async Task<TUser> IUserEmailStore<TUser>.FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public override async Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
             try
             {
@@ -117,7 +86,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             return null;
         }
 
-        async Task<TUser> IUserStore<TUser>.FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public override async Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             try
             {
@@ -139,7 +108,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             return null;
         }
 
-        async Task<TUser> IUserLoginStore<TUser>.FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public override async Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
             try
             {
@@ -161,7 +130,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             return null;
         }
 
-        async Task<TUser> IUserStore<TUser>.FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public override async Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             try
             {
@@ -183,232 +152,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             return null;
         }
 
-        async Task<int> IUserLockoutStore<TUser>.GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.AccessFailedCount;
-        }
 
-        async Task<string> IUserAuthenticatorKeyStore<TUser>.GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<IList<Claim>> IUserClaimStore<TUser>.GetClaimsAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.Claims.Select(x => new Claim(x.Type, x.Value, x.ValueType, x.Issuer, x.OriginalIssuer)).ToList();
-        }
-
-        async Task<string> IUserEmailStore<TUser>.GetEmailAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.Email;
-        }
-
-        async Task<bool> IUserEmailStore<TUser>.GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.EmailConfirmed;
-        }
-
-        async Task<bool> IUserLockoutStore<TUser>.GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.LockoutEnabled;
-        }
-
-        async Task<DateTimeOffset?> IUserLockoutStore<TUser>.GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.LockoutEnd;
-        }
-
-        async Task<IList<UserLoginInfo>> IUserLoginStore<TUser>.GetLoginsAsync(TUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<string> IUserEmailStore<TUser>.GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.Email;
-        }
-
-        async Task<string> IUserStore<TUser>.GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.Username;
-        }
-
-        async Task<string> IUserPasswordStore<TUser>.GetPasswordHashAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.PasswordHash;
-        }
-
-        async Task<string> IUserPhoneNumberStore<TUser>.GetPhoneNumberAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.PhoneNumber;
-        }
-
-        async Task<bool> IUserPhoneNumberStore<TUser>.GetPhoneNumberConfirmedAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.PhoneNumberConfirmed;
-        }
-
-        async Task<string> IUserSecurityStampStore<TUser>.GetSecurityStampAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.SecurityStamp;
-        }
-
-        async Task<string> IUserAuthenticationTokenStore<TUser>.GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<bool> IUserTwoFactorStore<TUser>.GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.TwoFactorEnabled;
-        }
-
-        async Task<string> IUserStore<TUser>.GetUserIdAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.Id.ToString();
-        }
-
-        async Task<string> IUserStore<TUser>.GetUserNameAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return user.Username;
-        }
-
-        async Task<IList<TUser>> IUserClaimStore<TUser>.GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<bool> IUserPasswordStore<TUser>.HasPasswordAsync(TUser user, CancellationToken cancellationToken)
-        {
-            return !string.IsNullOrWhiteSpace(user.PasswordHash);
-        }
-
-        async Task<int> IUserLockoutStore<TUser>.IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
-        {
-            user.AccessFailedCount += 1;
-            return user.AccessFailedCount;
-        }
-
-        async Task<bool> IUserTwoFactorRecoveryCodeStore<TUser>.RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserClaimStore<TUser>.RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserLoginStore<TUser>.RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserAuthenticationTokenStore<TUser>.RemoveTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserClaimStore<TUser>.ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserTwoFactorRecoveryCodeStore<TUser>.ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserLockoutStore<TUser>.ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
-        {
-            user.AccessFailedCount = 0;
-        }
-
-        async Task IUserAuthenticatorKeyStore<TUser>.SetAuthenticatorKeyAsync(TUser user, string key, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-        async Task IUserEmailStore<TUser>.SetEmailAsync(TUser user, string email, CancellationToken cancellationToken)
-        {
-            user.Email = email;
-
-        }
-
-        async Task IUserEmailStore<TUser>.SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
-        {
-            user.EmailConfirmed = confirmed;
-
-        }
-
-        async Task IUserLockoutStore<TUser>.SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
-        {
-            user.LockoutEnabled = enabled;
-
-
-        }
-
-        async Task IUserLockoutStore<TUser>.SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
-        {
-            user.LockoutEnd = lockoutEnd;
-
-        }
-
-        async Task IUserEmailStore<TUser>.SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken)
-        {
-            user.Email = normalizedEmail;
-
-        }
-
-        async Task IUserStore<TUser>.SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
-        {
-            user.Username = normalizedName;
-
-        }
-
-        async Task IUserPasswordStore<TUser>.SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken cancellationToken)
-        {
-            user.PasswordHash = passwordHash;
-
-        }
-
-        async Task IUserPhoneNumberStore<TUser>.SetPhoneNumberAsync(TUser user, string phoneNumber, CancellationToken cancellationToken)
-        {
-            user.PhoneNumber = phoneNumber;
-
-        }
-
-        async Task IUserPhoneNumberStore<TUser>.SetPhoneNumberConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
-        {
-            user.PhoneNumberConfirmed = confirmed;
-
-        }
-
-        async Task IUserSecurityStampStore<TUser>.SetSecurityStampAsync(TUser user, string stamp, CancellationToken cancellationToken)
-        {
-            user.SecurityStamp = stamp;
-
-        }
-
-        async Task IUserAuthenticationTokenStore<TUser>.SetTokenAsync(TUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IUserTwoFactorStore<TUser>.SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
-        {
-
-            user.TwoFactorEnabled = enabled;
-
-        }
-
-        async Task IUserStore<TUser>.SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
-        {
-
-            user.Username = userName;
-
-        }
-
-        async Task<IdentityResult> IUserStore<TUser>.UpdateAsync(TUser user, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
         {
 
             try
@@ -425,6 +170,26 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
                 return IdentityResult.Failed(new IdentityError() { Description = ex.Message });
             }
             return IdentityResult.Failed(new IdentityError() { Description = "Something went wrong while updating" });
+        }
+
+        public override async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _users.FindAsync(Builders<TUser>.Filter.ElemMatch(x => x.Claims, c=> c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType));
+                var users = await result.ToListAsync();
+                UserCache.AddRange(users);
+                return users;
+            }
+            catch (MongoException ex)
+            {
+                _logger.LogError(ex, "Finding users failed!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Finding users resulted in generic error!");
+            }
+            return null;
         }
     }
 }

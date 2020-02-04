@@ -23,11 +23,13 @@ namespace IdentityServer.Models
         public string SecurityStamp { get; set; }
 
 
+
         public List<ApplicationUserClaim> Claims { get; set; } = new List<ApplicationUserClaim>();
 
         public List<ApplicationProviderInfo> Providers { get; set; } = new List<ApplicationProviderInfo>();
 
         public DateTimeOffset? LockoutEnd { get; set; }
+        public List<ApplicationCodes> Codes { get; set; } = new List<ApplicationCodes>();
         
         public bool TwoFactorEnabled { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
@@ -50,6 +52,25 @@ namespace IdentityServer.Models
         public int AccessFailedCount { get; set; }
 
 
+    }
+
+    public class ApplicationCodes
+    {
+        public enum CodeType : byte
+        {
+            VerificationCode,
+
+            AuthenticatorKey,
+
+
+            Other = 255
+        }
+
+        public CodeType Type { get; set; }
+
+        public string Code { get; set; }
+        public DateTimeOffset Expiry { get; set; }
+        public DateTime Created { get; set; }
     }
 
     public class ApplicationUserClaim
@@ -77,6 +98,7 @@ namespace IdentityServer.Models
         public string Issuer { get; set; }
         public string ValueType { get; set; }
         public string Value { get; set; }
+
     }
 
 
