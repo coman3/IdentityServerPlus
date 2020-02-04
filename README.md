@@ -1,11 +1,11 @@
 # IdentityServerPlus
 A bloody massive extension on top of IdentityServer4 that makes it actualy usefull to the lazy programer.
 Primary Goals:
- - Plugable
- - Easy to setup
- - Scalable and Relabile
- - Secure
- - Faster than the crap that exsists today
+ - [x] Plugable
+ - [ ] Easy to setup
+ - [ ] Scalable and Relabile
+ - [ ] Secure
+ - [ ] Faster than the crap that exsists today
   
 
 # Status: In Dev
