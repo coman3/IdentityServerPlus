@@ -51,7 +51,20 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 
         public override async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                await _users.DeleteOneAsync(x => x.Id == user.Id);
+                return IdentityResult.Success;
+            }
+            catch (MongoException ex)
+            {
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message, Code = "IUSDA_DME" });
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message, Code = "IUSDA_DE" });
+            }
         }
 
         public override void Dispose()
@@ -61,7 +74,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 
         public override async ValueTask DisposeAsync()
         {
-            this.Dispose();
+            await Task.Run(Dispose);
         }
 
         public override async Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
@@ -176,7 +189,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
         {
             try
             {
-                var result = await _users.FindAsync(Builders<TUser>.Filter.ElemMatch(x => x.Claims, c=> c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType));
+                var result = await _users.FindAsync(Builders<TUser>.Filter.ElemMatch(x => x.Claims, c => c.Type == claim.Type && c.Value == claim.Value && c.ValueType == claim.ValueType));
                 var users = await result.ToListAsync();
                 UserCache.AddRange(users);
                 return users;
