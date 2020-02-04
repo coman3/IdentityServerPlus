@@ -9,7 +9,7 @@ Primary Goals:
   
 
 # Status: In Dev
-This project is still heavly in development and will have breaking changes. Please see the project plan below to see what still needs to be implemented.
+This project is still heavly in development, will have breaking changes and is **NOT READY TO BE IN PRODUCTION**. Please see the project plan below to see what still needs to be implemented **before it can be tested for security** then marked as alpha.
 
 # TODO
 Check out [The current project kanban for an up to date list](https://github.com/coman3/IdentityServerPlus/projects) or the [Project issues for enhancments that still need to be implmented](https://github.com/coman3/IdentityServerPlus/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
