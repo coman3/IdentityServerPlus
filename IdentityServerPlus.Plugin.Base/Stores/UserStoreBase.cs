@@ -143,7 +143,7 @@ namespace IdentityServerPlus.Plugin.Base.Stores
         #region Adds
         public virtual async Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
         {
-            var newClaims = claims.Select(c => new ApplicationUserClaim(c)).ToList();
+            var newClaims = claims.Select(c => new ApplicationClaim(c)).ToList();
             user.Claims.AddRange(newClaims);
         }
 

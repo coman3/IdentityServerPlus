@@ -55,7 +55,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB
                 cm.MapCreator(p => new ApplicationProviderInfo(p.LoginProvider, p.ProviderKey, p.ProviderDisplayName));
             });
 
-            BsonClassMap.RegisterClassMap<ApplicationUserClaim>(cm =>
+            BsonClassMap.RegisterClassMap<ApplicationClaim>(cm =>
             {
                 cm.MapProperty(x => x.OriginalIssuer);
                 //cm.MapProperty(x => x.Properties);

@@ -81,8 +81,9 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
         {
             try
             {
-                if (UserCache.Any(x => x.Email == normalizedEmail))
-                    return UserCache.SingleOrDefault(x => x.Email == normalizedEmail);
+                var userCached = UserCache.SingleOrDefault(x => x.Email == normalizedEmail);
+                if (userCached != null) return userCached;
+
                 var result = await _users.FindAsync(Builders<TUser>.Filter.Eq(x => x.Email, normalizedEmail));
                 var user = await result.SingleOrDefaultAsync();
                 UserCache.Add(user);
@@ -103,8 +104,9 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
         {
             try
             {
-                if (UserCache.Any(x => x.Id == new Guid(userId)))
-                    return UserCache.SingleOrDefault(x => x.Id == new Guid(userId));
+                var userCached = UserCache.SingleOrDefault(x => x.Id == new Guid(userId));
+                if (userCached != null) return userCached;
+
                 var result = await _users.FindAsync(Builders<TUser>.Filter.Eq(x => x.Id, new Guid(userId)));
                 var user = await result.SingleOrDefaultAsync();
                 UserCache.Add(user);
@@ -125,8 +127,9 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
         {
             try
             {
-                if (UserCache.Any(x => x.Providers.Any(x => x.ProviderKey == providerKey && x.LoginProvider == loginProvider)))
-                    return UserCache.SingleOrDefault(x => x.Providers.Any(x => x.ProviderKey == providerKey && x.LoginProvider == loginProvider));
+                var userCached = UserCache.SingleOrDefault(x=> x.Providers.Any(x => x.ProviderKey == providerKey && x.LoginProvider == loginProvider));
+                if (userCached != null) return userCached;
+
                 var result = await _users.FindAsync(Builders<TUser>.Filter.ElemMatch(x => x.Providers, c => c.LoginProvider == loginProvider && c.ProviderKey == providerKey));
                 var user = await result.SingleOrDefaultAsync();
                 UserCache.Add(user);
@@ -147,8 +150,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
         {
             try
             {
-                if (UserCache.Any(x => x.Username == normalizedUserName))
-                    return UserCache.SingleOrDefault(x => x.Username == normalizedUserName);
+                var userCached = UserCache.SingleOrDefault(x => x.Username == normalizedUserName);
+                if (userCached != null) return userCached;
                 var result = await _users.FindAsync(Builders<TUser>.Filter.Eq(x => x.Username, normalizedUserName));
                 var user = await result.SingleOrDefaultAsync();
                 UserCache.Add(user);

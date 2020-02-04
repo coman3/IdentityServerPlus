@@ -1,5 +1,8 @@
 ﻿using IdentityServer.Models;
+using IdentityServerPlus.Plugin.Base.Stores;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,88 +13,104 @@ using System.Threading.Tasks;
 
 namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 {
-    class RoleStore<TRole> : IQueryableRoleStore<TRole>, 
-        IRoleStore<TRole>, 
-        IDisposable, 
-        IAsyncDisposable, 
-        IRoleClaimStore<TRole>
+    class RoleStore<TRole> : RoleStoreBase<TRole>
         where TRole : ApplicationRole
     {
-        IQueryable<TRole> IQueryableRoleStore<TRole>.Roles => throw new NotImplementedException();
+        private IMongoCollection<TRole> _roles { get; }
+        private ILogger _logger { get; }
 
-        async Task IRoleClaimStore<TRole>.AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
+        private List<TRole> RoleCache = new List<TRole>();
+
+        public override IQueryable<TRole> Roles => _roles.AsQueryable();
+
+        public RoleStore(IMongoDatabase applicationDatabase, ILogger<RoleStore<TRole>> logger)
         {
-            throw new NotImplementedException();
+            _roles = applicationDatabase.GetCollection<TRole>("roles");
+            _logger = logger;
         }
 
-        async Task<IdentityResult> IRoleStore<TRole>.CreateAsync(TRole role, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                await _roles.InsertOneAsync(role);
+                return IdentityResult.Success;
+            }
+            catch (MongoException ex)
+            {
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message, Code = "IRSCA_CME" });
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message, Code = "IRSCA_CE" });
+            }
         }
 
-        async Task<IdentityResult> IRoleStore<TRole>.DeleteAsync(TRole role, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> DeleteAsync(TRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                await _roles.DeleteOneAsync(x => x.Id == role.Id);
+                return IdentityResult.Success;
+            }
+            catch (MongoException ex)
+            {
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message, Code = "IRSDA_DME" });
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message, Code = "IRSDA_DE" });
+            }
         }
 
-        void IDisposable.Dispose()
+        public override async Task<TRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            
+            try
+            {
+                var role = RoleCache.SingleOrDefault(x => x.Id == roleId);
+                if (role != null)
+                    return role;
+
+                var result = await _roles.FindAsync(Builders<TRole>.Filter.Eq(x => x.Id, roleId));
+                var roleDb = await result.SingleOrDefaultAsync();
+                RoleCache.Add(roleDb);
+                return role;
+            }
+            catch (MongoException ex)
+            {
+                _logger.LogError(ex, "Finding role failed!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Finding role resulted in generic error (Could be two with the same id!)!");
+            }
+            return null;
         }
 
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        public override Task<TRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            
+            return FindByIdAsync(normalizedRoleName, cancellationToken);
         }
 
-        async Task<TRole> IRoleStore<TRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        public override async Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var resultReplace = await _roles.ReplaceOneAsync(Builders<TRole>.Filter.Eq(x => x.Id, role.Id), role);
+                if (resultReplace.IsAcknowledged)
+                {
+                    return IdentityResult.Success;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to update role: {0}", role.Id);
+                return IdentityResult.Failed(new IdentityError() { Description = ex.Message });
+            }
+            return IdentityResult.Failed(new IdentityError() { Description = "Something went wrong while updating" });
 
-        async Task<TRole> IRoleStore<TRole>.FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<IList<Claim>> IRoleClaimStore<TRole>.GetClaimsAsync(TRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<string> IRoleStore<TRole>.GetNormalizedRoleNameAsync(TRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<string> IRoleStore<TRole>.GetRoleIdAsync(TRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<string> IRoleStore<TRole>.GetRoleNameAsync(TRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IRoleClaimStore<TRole>.RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IRoleStore<TRole>.SetNormalizedRoleNameAsync(TRole role, string normalizedName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task IRoleStore<TRole>.SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        async Task<IdentityResult> IRoleStore<TRole>.UpdateAsync(TRole role, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

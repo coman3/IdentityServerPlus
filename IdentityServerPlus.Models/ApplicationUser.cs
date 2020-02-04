@@ -24,7 +24,7 @@ namespace IdentityServer.Models
 
 
 
-        public List<ApplicationUserClaim> Claims { get; set; } = new List<ApplicationUserClaim>();
+        public List<ApplicationClaim> Claims { get; set; } = new List<ApplicationClaim>();
 
         public List<ApplicationProviderInfo> Providers { get; set; } = new List<ApplicationProviderInfo>();
 
@@ -73,14 +73,14 @@ namespace IdentityServer.Models
         public DateTime Created { get; set; }
     }
 
-    public class ApplicationUserClaim
+    public class ApplicationClaim
     {
 
-        public ApplicationUserClaim()
+        public ApplicationClaim()
         {
         }
 
-        public ApplicationUserClaim(Claim claim)
+        public ApplicationClaim(Claim claim)
         {
             Type = claim.Type;
             Properties = claim.Properties;

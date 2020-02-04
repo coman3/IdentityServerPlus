@@ -58,9 +58,9 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
             {
                 Email = email.Value,
                 Username = Guid.NewGuid().ToString(),
-                Claims = new List<ApplicationUserClaim>()
+                Claims = new List<ApplicationClaim>()
                 {
-                    new ApplicationUserClaim(new System.Security.Claims.Claim(JwtClaimTypes.Name, fullName.Value, null, Scheme, Scheme))
+                    new ApplicationClaim(new System.Security.Claims.Claim(JwtClaimTypes.Name, fullName.Value, null, Scheme, Scheme))
                 }
             };
         }
