@@ -1,29 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <UserSecretsId>b6849393-f749-454f-bc99-2e55e5b86b4f</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
     <ProjectReference Include="..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir $(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\&#xD;&#xA;copy $(OutDir) $(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\" />
   </Target>
-
 </Project>

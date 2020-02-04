@@ -1,3 +1,12 @@
 ﻿{
-  "Assembly": "IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft.dll"
+  "Assembly": "IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft.dll",
+  "ConfigurationSources": [
+    {
+      "ProviderType": "Files",
+      "FileNames": [
+        "plugin.settings.json",
+        "plugin.private.settings.json"
+      ]
+    }
+  ]
 }
