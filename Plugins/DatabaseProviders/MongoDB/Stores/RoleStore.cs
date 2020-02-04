@@ -75,7 +75,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 
                 var result = await _roles.FindAsync(Builders<TRole>.Filter.Eq(x => x.Id, roleId));
                 var roleDb = await result.SingleOrDefaultAsync();
-                RoleCache.Add(roleDb);
+                if (roleDb != null)
+                    RoleCache.Add(roleDb);
                 return role;
             }
             catch (MongoException ex)

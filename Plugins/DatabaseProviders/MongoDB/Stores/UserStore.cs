@@ -86,7 +86,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 
                 var result = await _users.FindAsync(Builders<TUser>.Filter.Eq(x => x.Email, normalizedEmail));
                 var user = await result.SingleOrDefaultAsync();
-                UserCache.Add(user);
+                if (user != null)
+                    UserCache.Add(user);
                 return user;
             }
             catch (MongoException ex)
@@ -109,7 +110,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 
                 var result = await _users.FindAsync(Builders<TUser>.Filter.Eq(x => x.Id, new Guid(userId)));
                 var user = await result.SingleOrDefaultAsync();
-                UserCache.Add(user);
+                if(user != null)
+                    UserCache.Add(user);
                 return user;
             }
             catch (MongoException ex)
@@ -132,7 +134,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 
                 var result = await _users.FindAsync(Builders<TUser>.Filter.ElemMatch(x => x.Providers, c => c.LoginProvider == loginProvider && c.ProviderKey == providerKey));
                 var user = await result.SingleOrDefaultAsync();
-                UserCache.Add(user);
+                if (user != null)
+                    UserCache.Add(user);
                 return user;
             }
             catch (MongoException ex)
@@ -154,7 +157,8 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
                 if (userCached != null) return userCached;
                 var result = await _users.FindAsync(Builders<TUser>.Filter.Eq(x => x.Username, normalizedUserName));
                 var user = await result.SingleOrDefaultAsync();
-                UserCache.Add(user);
+                if (user != null)
+                    UserCache.Add(user);
                 return user;
             }
             catch (MongoException ex)
