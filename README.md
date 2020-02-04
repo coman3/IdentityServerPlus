@@ -12,40 +12,4 @@ Primary Goals:
 This project is still heavly in development and will have breaking changes. Please see the project plan below to see what still needs to be implemented.
 
 # TODO
-Check out [The current project kanban for an up to date list](https://github.com/coman3/IdentityServerPlus/projects)
-
-Just a quick general gist of what needs to happen still (not including the done stuff), with expanded info below.
-Short term:
-- [x] Cleanup Plugin system for more flexability (interface everything)
-- [ ] Implement other external providers and provide config options for each plugin
-- [ ] Implement external provider mapping system through plugins
-- [ ] Add support for any database type through plugins
-
-Long term:
-- [ ] Add support for custom controllers through plugins
-- [ ] Add support for themes through plugins
-- [ ] Add support for login stages through plugins
-
-Unknown term: 
-- [ ] Create a Manage Account system for the end user
-- [ ] Implement linking of external accounts to an existing account
-- [ ] Implement a User Management API, Event Management API, and or Metrics API
-
-### External Providers
-All of these providers will have:
-- [ ] Support for mapping information from their claims to the current user model.
-- [ ] Support for saving the AccessTokens received (if capable) to allow the server to perform actions on their behalf.
-      
-      These tokens will be accessable via a resource claim when authenticating to the server to allow resource servers to use them on the users behalf as well
-      This is mostly for Enterprise use cases, such as Office365 directory edits, but can also be used to keep the information of the user up to date.
-
-Social and Enterprise:
- - [ ] Microsoft & Office365
- - [ ] Facebook
- - [ ] Twitter
- - [ ] Github
- - [ ] Paypal
- - [ ] Google & Gsuite
- Misc: 
- - [ ] Any OpenIDConnect
- - [ ] Any OAuth2.0
+Check out [The current project kanban for an up to date list](https://github.com/coman3/IdentityServerPlus/projects) or the [Project issues for enhancments that still need to be implmented](https://github.com/coman3/IdentityServerPlus/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
