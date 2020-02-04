@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+// Disable await warning as most methods return a single property without needing await calls.
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously as
+
 namespace IdentityServerPlus.Plugin.Base.Stores
 {
     public abstract class UserStoreBase<TUser> :
@@ -39,6 +42,7 @@ namespace IdentityServerPlus.Plugin.Base.Stores
         public abstract Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
 
         #region Sets
+
         public virtual async Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
         {
             user.AccessFailedCount += 1;
