@@ -85,7 +85,7 @@ namespace IdentityServerPlus.Plugin.Base.Services
             foreach (var plugin in PluginInstances)
             {
                 _logger.LogInformation("    Building Plugin Providers for {0}...", plugin.Instance.Name);
-                var providers = plugin.Build(_configuration);
+                var providers = plugin.Build();
                 foreach (var provider in providers)
                 {
                     var providerInstance = plugin.ActivateProvider(provider);

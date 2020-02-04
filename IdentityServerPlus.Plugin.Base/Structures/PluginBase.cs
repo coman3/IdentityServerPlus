@@ -45,7 +45,7 @@ namespace IdentityServerPlus.Plugin.Base.Structures
         /// <summary>
         /// List all providers that this plugin will expose.
         /// </summary>
-        public abstract IEnumerable<ProviderItem> GetProviderTypesAndArguments(IConfiguration configuration);
+        public abstract IEnumerable<ProviderItem> GetProviderTypesAndArguments();
         /// <summary>
         /// 
         /// </summary>
@@ -63,11 +63,6 @@ namespace IdentityServerPlus.Plugin.Base.Structures
             }
             return (IPluginProvider)Activator.CreateInstance(type, parameters);
 
-        }
-
-        public virtual TConfig LoadConfig(string path)
-        {
-            return JsonConvert.DeserializeObject<TConfig>(ConfigurationFile);
         }
 
 

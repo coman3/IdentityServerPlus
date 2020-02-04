@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
 using IdentityServer.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
@@ -14,9 +15,11 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
     internal class MicrosoftAuthenticationProvider : Base.Structures.AuthenticationProvider
     {
         private const string ObjectIdentfier = "http://schemas.microsoft.com/identity/claims/objectidentifier";
-        public MicrosoftAuthenticationProvider() : base("Microsoft", "microsoft")
+        private IConfiguration Configuration { get; }
+
+        public MicrosoftAuthenticationProvider(IConfiguration configuration) : base("Microsoft", "microsoft")
         {
-            //_options = options.Value;
+            Configuration = configuration;
         }
 
         public override string Description => "A login provider for Microft Social and Enterprise (Office 365) Connections";
@@ -30,8 +33,8 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
                  options.Scope.Add("User.Read");
                  options.Scope.Add("offline_access");
                  options.ResponseType = "id_token token";
-                 options.ClientId = "7d6d3978-f958-4759-887d-498b52ede1df";
-                 options.ClientSecret = "DSBjc:/?V-FBGAfY64t96gm@GG=qfcct";
+                 options.ClientId = Configuration["ClientId"];
+                 options.ClientSecret = Configuration["ClientSecret"];
                  options.MetadataAddress = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837/v2.0/.well-known/openid-configuration";
                  options.Authority = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837";
              });
