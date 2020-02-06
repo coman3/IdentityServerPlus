@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 
 namespace IdentityServer
 {
@@ -55,6 +56,7 @@ namespace IdentityServer
             var authentication = services.AddAuthentication();
             authentication = PluginManager.BuildAuthentication(authentication);
 
+            
 
             var identity = services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
                 {
@@ -78,6 +80,7 @@ namespace IdentityServer
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                IdentityModelEventSource.ShowPII = true;
             }
 
 

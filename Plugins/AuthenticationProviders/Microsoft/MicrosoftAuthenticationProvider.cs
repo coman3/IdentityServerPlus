@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +36,18 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
                  options.ResponseType = "id_token token";
                  options.ClientId = Configuration["ClientId"];
                  options.ClientSecret = Configuration["ClientSecret"];
-                 options.MetadataAddress = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837/v2.0/.well-known/openid-configuration";
-                 options.Authority = "https://login.microsoftonline.com/15864aef-67b6-4b0e-8bfe-cd61201a6837";
+                 options.MetadataAddress = "https://login.microsoftonline.com/" + Configuration["TenantId"] + "/v2.0/.well-known/openid-configuration";
+                 options.Authority = "https://login.microsoftonline.com/" + Configuration["TenantId"];
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidAudience = Configuration["ClientId"],
+                     IssuerValidator = (issuer, securityToken, validationParameters) =>
+                     {
+                         if (issuer.StartsWith("https://login.microsoftonline.com/") && issuer.EndsWith("/v2.0"))
+                             return issuer;
+                         return null;
+                     }
+                 };
              });
         }
 
@@ -76,18 +87,18 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
                 var me = await graphClient.Me.Request().GetAsync();
                 user.PhoneNumber = me.MobilePhone;
                 user.PhoneNumberConfirmed = true;
-                
-                user.Email = me.Mail;
-                user.EmailConfirmed = true; // we know its confirmed if we got this far from the microsoft account.
+
+                user.Email = me.UserPrincipalName;
+                user.EmailVerified = true; // we know its confirmed if we got this far from the microsoft account.
             }
             catch (Exception) { }
-            
+
 
             var provider = user.Providers.SingleOrDefault(x => x.LoginProvider == Scheme);
             if (provider != null)
             {
 
-                
+
                 if (!string.IsNullOrWhiteSpace(result.Properties.GetTokenValue("access_token")))
                 {
                     provider.AccessToken = result.Properties.GetTokenValue("access_token");
