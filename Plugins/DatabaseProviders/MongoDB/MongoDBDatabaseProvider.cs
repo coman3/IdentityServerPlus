@@ -2,6 +2,7 @@
 using IdentityServer4.Models;
 using IdentityServerPlus.Plugin.Base.Interfaces;
 using IdentityServerPlus.Plugin.Base.Models;
+using IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Services;
 using IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,43 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB
                 cm.MapProperty(x => x.AccessFailedCount);
             });
 
+            BsonClassMap.RegisterClassMap<Resource>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdProperty(c => c.Name);
+                cm.AddKnownType(typeof(ApiResource));
+                cm.AddKnownType(typeof(IdentityResource));
+            });
+
+            BsonClassMap.RegisterClassMap<ApiResource>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIgnoreExtraElements(true);
+            });
+            BsonClassMap.RegisterClassMap<IdentityResource>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetIgnoreExtraElements(true);
+               
+            });
+
+            BsonClassMap.RegisterClassMap<Client>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdProperty(c => c.ClientId);
+            });
+            BsonClassMap.RegisterClassMap<PersistedGrant>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdProperty(c => c.Key);
+                cm.MapProperty(x => x.Expiration);
+                cm.MapProperty(x => x.SubjectId);
+                cm.MapProperty(x => x.Type);
+                cm.MapProperty(x => x.ClientId);
+                cm.MapProperty(x => x.CreationTime);
+                cm.MapProperty(x => x.Data);
+            });
+
             BsonClassMap.RegisterClassMap<UserLoginInfo>(cm =>
             {
                 cm.AutoMap();
@@ -46,7 +84,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB
                 cm.MapCreator(p => new UserLoginInfo(p.LoginProvider, p.ProviderKey, p.ProviderDisplayName));
             });
             BsonClassMap.RegisterClassMap<ApplicationProviderInfo>(cm =>
-            {   
+            {
                 cm.MapProperty(x => x.AccessToken);
                 cm.MapProperty(x => x.AccessTokenExpiry);
                 cm.MapProperty(x => x.IdToken);
@@ -69,7 +107,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB
 
         public IdentityBuilder Build(IdentityBuilder builder)
         {
-            
+
             var client = new MongoClient();
             builder.Services.AddSingleton<IMongoDatabase>(client.GetDatabase("IdentityServer"));
             builder.Services.AddScoped<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>();
@@ -80,12 +118,10 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB
 
         public IIdentityServerBuilder Build(IIdentityServerBuilder builder)
         {
-            builder = builder
-                .AddInMemoryApiResources(new List<ApiResource>())
-                .AddInMemoryClients(new List<Client>())
-                .AddInMemoryIdentityResources(new List<IdentityResource>())
-                .AddInMemoryPersistedGrants();
-            return builder;
+            return builder.AddClientStore<ResourceStore>()
+            .AddResourceStore<ResourceStore>()
+            .AddPersistedGrantStore<UserResourceStore>()
+            .AddCorsPolicyService<CorsPolicyService>();
         }
     }
 }

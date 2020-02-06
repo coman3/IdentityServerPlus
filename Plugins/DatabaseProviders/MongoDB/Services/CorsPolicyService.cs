@@ -10,7 +10,7 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Services
     {
         async Task<bool> ICorsPolicyService.IsOriginAllowedAsync(string origin)
         {
-            throw new System.NotImplementedException();
+            return true;
         }
     }
 }

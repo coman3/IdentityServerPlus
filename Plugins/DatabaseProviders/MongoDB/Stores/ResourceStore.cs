@@ -14,8 +14,6 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
 {
     public class ResourceStore : ResourceStoreBase
     {
-        private List<Resource> ResourceCache { get; } = new List<Resource>();
-        private List<Client> ClientsCache { get; } = new List<Client>();
         private IMongoCollection<Resource> _resources { get; }
         private IMongoCollection<Client> _clients { get; }
         private ILogger _logger { get; }
@@ -26,53 +24,39 @@ namespace IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.Stores
             _clients = applicationDatabase.GetCollection<Client>("clients");
             _logger = logger;
         }
-        private async Task GetAll()
-        {
-            if (ResourceCache.Count <= 0)
-            {
-                _logger.LogInformation("Fetching Resources from Database and caching");
-                var resources = await _resources.AsQueryable().ToListAsync();
-                ResourceCache.AddRange(resources);
-            }
-            if (ClientsCache.Count <= 0)
-            {
-                _logger.LogInformation("Fetching clients from Database and caching");
-                var clients = await _clients.AsQueryable().ToListAsync();
-                ClientsCache.AddRange(clients);
-            }
-        }
-
         public override async Task<ApiResource> FindApiResourceAsync(string name)
         {
-            await GetAll();
-            var resource = ResourceCache.OfType<ApiResource>().Where(x => x.Name == name).SingleOrDefault();
-            return resource;
+            var query = await _resources.FindAsync<ApiResource>(Builders<Resource>.Filter.OfType<ApiResource>(Builders<ApiResource>.Filter.Eq(x => x.Name, name)));
+            return await query.SingleOrDefaultAsync();
         }
 
         public override async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            await GetAll();
-            var resources = ResourceCache.OfType<ApiResource>().Where(x => x.Scopes.Any(c => scopeNames.Contains(c.Name)));
-            return resources;
+            var query = await _resources.FindAsync<ApiResource>(Builders<Resource>.Filter.OfType<ApiResource>(Builders<ApiResource>.Filter.ElemMatch(x => x.Scopes, Builders<Scope>.Filter.In(x => x.Name, scopeNames))));
+            return await query.ToListAsync();
         }
 
         public override async Task<Client> FindClientByIdAsync(string clientId)
         {
-            await GetAll();
-            var client = ClientsCache.OfType<Client>().Where(x => x.ClientId == clientId).SingleOrDefault();
-            return client;
+            var query = await _clients.FindAsync<Client>(Builders<Client>.Filter.Eq(x=> x.ClientId, clientId));
+            return await query.SingleOrDefaultAsync();
         }
 
         public override async Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
         {
-            await GetAll();
-            var resources = ResourceCache.OfType<IdentityResource>().Where(x => scopeNames.Contains(x.Name));
-            return resources;
+            var query = await _resources.FindAsync<IdentityResource>(Builders<Resource>.Filter.OfType<IdentityResource>(Builders<IdentityResource>.Filter.In(x => x.Name, scopeNames)));
+            return await query.ToListAsync();
         }
 
-        public override Task<Resources> GetAllResourcesAsync()
+        public override async Task<Resources> GetAllResourcesAsync()
         {
-            return Task.FromResult(new Resources(ResourceCache.OfType<IdentityResource>(), ResourceCache.OfType<ApiResource>()));
+            var queryApiResouces = await _resources.FindAsync<ApiResource>(Builders<Resource>.Filter.OfType<ApiResource>());
+            var queryIdentityResouces = await _resources.FindAsync<IdentityResource>(Builders<Resource>.Filter.OfType<IdentityResource>());
+            return new Resources()
+            {
+                ApiResources = await queryApiResouces.ToListAsync(),
+                IdentityResources= await queryIdentityResouces.ToListAsync()
+            };
         }
     }
 }
