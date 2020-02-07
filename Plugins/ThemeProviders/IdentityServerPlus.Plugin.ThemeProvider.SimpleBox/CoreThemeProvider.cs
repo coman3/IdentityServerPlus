@@ -1,4 +1,5 @@
 ﻿using IdentityServerPlus.Plugin.Base.Interfaces;
+using IdentityServerPlus.Plugin.Base.Structures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -9,24 +10,15 @@ using System.Runtime.Loader;
 
 namespace IdentityServerPlus.Plugin.ThemeProvider.SimpleBox
 {
-    public class SimpleBoxThemeProvider : IThemeProvider, IPluginProvider
+    public class SimpleBoxThemeProvider : ThemeProviderBase
     {
-        public string Name => "SimpleBox Provider";
+        public override string Name => "SimpleBox Provider";
 
-        public string Description => "Provides a simple boxed login theme to the application that can be customized";
+        public override string Description => "Provides a simple boxed login theme to the application that can be customized";
 
-        public int Index => 1;
+        public override int Index => 1;
 
-        public void ConfigureRazor(IMvcBuilder builder)
-        {
-            foreach (var ass in GetViewAssemblies())
-            {
-                builder.PartManager.ApplicationParts.Insert(0, new AssemblyPart(ass));
-            }
-            builder.AddControllersAsServices();
-        }
-
-        public Assembly[] GetViewAssemblies()
+        public override Assembly[] GetViewAssemblies()
         {
             var currentAssembly = Assembly.GetAssembly(typeof(SimpleBoxThemeProvider));
             return new[]

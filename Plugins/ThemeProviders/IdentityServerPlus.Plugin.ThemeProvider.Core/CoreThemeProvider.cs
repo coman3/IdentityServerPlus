@@ -1,4 +1,5 @@
 ﻿using IdentityServerPlus.Plugin.Base.Interfaces;
+using IdentityServerPlus.Plugin.Base.Structures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -9,24 +10,15 @@ using System.Runtime.Loader;
 
 namespace IdentityServerPlus.Plugin.ThemeProvider.Core
 {
-    public class CoreThemeProvider : IThemeProvider, IPluginProvider
+    public class CoreThemeProvider : ThemeProviderBase
     {
-        public string Name => "Core Theme Provider";
+        public override string Name => "Core Theme Provider";
 
-        public string Description => "Provides a simple basic theme to the application that can be customized";
+        public override string Description => "Provides a simple basic theme to the application that can be customized";
 
-        public int Index => 0;
+        public override int Index => 0;
 
-        public void ConfigureRazor(IMvcBuilder builder)
-        {
-            foreach (var ass in GetViewAssemblies())
-            {
-                builder.PartManager.ApplicationParts.Insert(0, new AssemblyPart(ass));
-            }
-            builder.AddControllersAsServices();
-        }
-
-        public Assembly[] GetViewAssemblies()
+        public override Assembly[] GetViewAssemblies()
         {
             var currentAssembly = Assembly.GetAssembly(typeof(CoreThemeProvider));
             return new[]
