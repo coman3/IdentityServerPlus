@@ -47,7 +47,10 @@ namespace IdentityServer
             PluginManager.CollectAll();
             services.AddSingleton(PluginManager);
 
-            services.AddMvc().AddControllersAsServices();
+            var mvcBuilder = services.AddMvc().AddControllersAsServices();
+            mvcBuilder = PluginManager.BuildThemeProviders(mvcBuilder);
+
+
             services.AddOptions();
             services.AddSingleton<IConfiguration>(Configuration);
 
@@ -71,7 +74,6 @@ namespace IdentityServer
                 .AddDeveloperSigningCredential(); // Move to Signing Credential Plugin
 
             identityServer = PluginManager.BuildIdentityServer(identityServer);
-
             PluginManager.BuildServices(services);
         }
 
@@ -99,6 +101,7 @@ namespace IdentityServer
             });
 
             PluginManager.BuildAppConfiguration(app);
+            PluginManager.Finalize();
         }
     }
 }

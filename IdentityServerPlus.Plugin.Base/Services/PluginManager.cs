@@ -6,6 +6,10 @@ using IdentityServerPlus.Plugin.Base.Structures;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,7 +32,9 @@ namespace IdentityServerPlus.Plugin.Base.Services
         private PluginManagerConfiguration _pluginConfiguration => _configuration.GetSection("PluginManager").Get<PluginManagerConfiguration>();
 
         public List<PluginInstance> PluginInstances = new List<PluginInstance>();
-        
+
+        public Assembly[] AssemblyState { get; set; }
+
 
         public PluginManager(ILogger<PluginManager> logger)
         {
@@ -41,6 +47,8 @@ namespace IdentityServerPlus.Plugin.Base.Services
 
         public void CollectAll()
         {
+
+            AssemblyState = AppDomain.CurrentDomain.GetAssemblies();
             DirectoryInfo directory = null;
             var currentAssLocation = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
             if (Directory.Exists(Path.Combine(currentAssLocation, _pluginConfiguration.Directory)))
@@ -67,16 +75,29 @@ namespace IdentityServerPlus.Plugin.Base.Services
             {
                 _logger.LogInformation("Found plugin folder {0}. Loading Assembly File...", plugin.FullName.Replace(currentAssLocation, ""));
                 var pluginConfig = JsonConvert.DeserializeObject<PluginConfig>(File.ReadAllText(Path.Combine(plugin.FullName, "plugin.json")));
-                var pluginAssembly = Assembly.LoadFrom(Path.Combine(plugin.FullName, pluginConfig.Assembly));
-                var types = pluginAssembly.GetTypes().Where(x => x.IsSubclassOf(typeof(PluginBase)) && x.IsClass && !x.IsAbstract).ToList();
-                foreach (var type in types)
+                var filesToLoad = new List<string>();
+                if (!string.IsNullOrWhiteSpace(pluginConfig.Assembly))
                 {
-                    var instance = new PluginInstance(pluginAssembly, type, pluginConfig) { AssemblyLocation = plugin.FullName };
-                    
-                    _logger.LogInformation("    Activating Plugin: {0}", type.Name);
-                    instance.Activate();
-                    PluginInstances.Add(instance);
-                    _logger.LogInformation("    Activated Plugin: {0} ({1})", instance.Instance.Name, instance.Instance.Version);
+                    filesToLoad.Add(pluginConfig.Assembly);
+                }
+                else
+                {
+                    filesToLoad.AddRange(pluginConfig.Assemblies);
+                }
+                foreach (var ass in filesToLoad)
+                {
+                    _logger.LogInformation("    Loading Assembly: {0}", ass);
+                    var pluginAssembly = Assembly.LoadFrom(Path.Combine(plugin.FullName, ass));
+                    var types = pluginAssembly.GetTypes().Where(x => x.IsSubclassOf(typeof(PluginBase)) && x.IsClass && !x.IsAbstract).ToList();
+                    foreach (var type in types)
+                    {
+                        var instance = new PluginInstance(pluginAssembly, type, pluginConfig) { AssemblyLocation = plugin.FullName };
+
+                        _logger.LogInformation("    Activating Plugin: {0}", type.Name);
+                        instance.Activate();
+                        PluginInstances.Add(instance);
+                        _logger.LogInformation("    Activated Plugin: {0} ({1})", instance.Instance.Name, instance.Instance.Version);
+                    }
                 }
             }
             _logger.LogInformation("All compatable plugins loaded!");
@@ -91,14 +112,43 @@ namespace IdentityServerPlus.Plugin.Base.Services
                     var providerInstance = plugin.ActivateProvider(provider);
                     _logger.LogInformation("    Activated provider {0}...", providerInstance.Name);
                 }
-                    
+
             }
             _logger.LogInformation("All compatable providers built!");
 
 
+            LogLoadedAssemblies();
+
         }
 
-        
+        public void Finalize()
+        {
+            LogLoadedAssemblies();
+            _logger.LogInformation("All Plugins Loaded.");
+        }
+
+        private IEnumerable<Assembly> GetLoadedAssemblies()
+        {
+            var endAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            foreach (var ass in AssemblyState)
+            {
+                endAssemblies.Remove(ass);
+            }
+            AssemblyState = AssemblyState.Concat(endAssemblies).ToArray();
+            return endAssemblies;
+        }
+
+        private void LogLoadedAssemblies(string message = "Loaded Assemblies:", string indent = "\t")
+        {
+            var endAssemblies = GetLoadedAssemblies();
+
+            _logger.LogInformation(message);
+            foreach (var ass in endAssemblies.OrderBy(x => x.FullName))
+            {
+                _logger.LogInformation("    " + ass.FullName);
+            }
+        }
+
 
         public AuthenticationBuilder BuildAuthentication(AuthenticationBuilder builder)
         {
@@ -113,7 +163,7 @@ namespace IdentityServerPlus.Plugin.Base.Services
                 }
             }
             _logger.LogInformation("Built all Authentication Providers!");
-
+            LogLoadedAssemblies();
             return builder;
         }
 
@@ -130,7 +180,7 @@ namespace IdentityServerPlus.Plugin.Base.Services
                 }
             }
             _logger.LogInformation("Built all Identity Providers!");
-
+            LogLoadedAssemblies();
             return builder;
 
         }
@@ -148,7 +198,7 @@ namespace IdentityServerPlus.Plugin.Base.Services
                 }
             }
             _logger.LogInformation("Built all Identity Server Providers!");
-
+            LogLoadedAssemblies();
             return builder;
         }
 
@@ -165,6 +215,7 @@ namespace IdentityServerPlus.Plugin.Base.Services
                 }
             }
             _logger.LogInformation("Built all Service Configuration Providers!");
+            LogLoadedAssemblies();
         }
 
         public void BuildAppConfiguration(IApplicationBuilder app)
@@ -180,6 +231,54 @@ namespace IdentityServerPlus.Plugin.Base.Services
                 }
             }
             _logger.LogInformation("Built all App Configuration Providers!");
+            LogLoadedAssemblies();
+        }
+
+        public IMvcBuilder BuildThemeProviders(IMvcBuilder builder)
+        {
+            _logger.LogInformation("Building Theme Providers...");
+
+
+            var assembilies = new List<KeyValuePair<int, Assembly[]>>();
+            foreach (var plugin in PluginInstances)
+            {
+                foreach (var provider in plugin.Providers.OfType<IThemeProvider>().OrderBy(x=> x.Index))
+                {
+                    
+                    if (provider == null) continue;
+                    _logger.LogInformation("    Building Theme Provider...");
+                    provider.ConfigureRazor(builder);                    
+                }
+            }
+
+            //foreach (var provider in assembilies.OrderBy(x=> x.Key))
+            //{
+            //    builder.ConfigureApplicationPartManager(options =>
+            //    {
+            //        foreach (var ass in provider.Value)
+            //        {
+            //            foreach (var b in new CompiledRazorAssemblyApplicationPartFactory().GetApplicationParts(ass))
+            //            {
+            //                // insert at the top of the stack, so that these views are found first over the default
+            //                options.ApplicationParts.Insert(0, b);
+            //            }
+            //        }
+            //    });
+            //}
+
+            //foreach (var plugin in PluginInstances)
+            //{
+            //    foreach (var provider in plugin.Providers.OfType<IThemeProvider>())
+            //    {
+            //        if (provider == null) continue;
+                    
+            //    }
+            //}
+            builder.Services.AddSingleton<EndpointSelector, PluginEndpointSelector>();
+            //builder.Services.AddSingleton<IControllerActivator, PluginServiceBasedControllerActivator>();
+            _logger.LogInformation("Built all Theme Providers!");
+            LogLoadedAssemblies();
+            return builder;
         }
 
         public IEnumerable<TType> GetProviders<TType>()

@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServer.Controllers {
+namespace IdentityServerPlus.Controllers
+{
     [SecurityHeaders]
     [AllowAnonymous]
     public class HomeController : Controller {

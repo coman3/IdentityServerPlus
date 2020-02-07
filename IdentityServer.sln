@@ -19,6 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerPlus.Plugin.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerPlus.Plugin.DatabaseProvider.MongoDB", "Plugins\DatabaseProviders\MongoDB\IdentityServerPlus.Plugin.DatabaseProvider.MongoDB.csproj", "{4B7FE070-324E-42EE-BA3B-6F297B257959}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThemeProviders", "ThemeProviders", "{C54D272F-C432-4C53-B62A-51C21731BEF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerPlus.Plugin.ThemeProvider.Core", "Plugins\ThemeProviders\IdentityServerPlus.Plugin.ThemeProvider.Core\IdentityServerPlus.Plugin.ThemeProvider.Core.csproj", "{2A347AD7-20F6-4143-88AE-27FDC338F972}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerPlus.Plugin.ThemeProvider.SimpleBox", "Plugins\ThemeProviders\IdentityServerPlus.Plugin.ThemeProvider.SimpleBox\IdentityServerPlus.Plugin.ThemeProvider.SimpleBox.csproj", "{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +95,30 @@ Global
 		{4B7FE070-324E-42EE-BA3B-6F297B257959}.Release|x64.Build.0 = Release|Any CPU
 		{4B7FE070-324E-42EE-BA3B-6F297B257959}.Release|x86.ActiveCfg = Release|Any CPU
 		{4B7FE070-324E-42EE-BA3B-6F297B257959}.Release|x86.Build.0 = Release|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Debug|x64.Build.0 = Debug|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Debug|x86.Build.0 = Debug|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Release|x64.ActiveCfg = Release|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Release|x64.Build.0 = Release|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Release|x86.ActiveCfg = Release|Any CPU
+		{2A347AD7-20F6-4143-88AE-27FDC338F972}.Release|x86.Build.0 = Release|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Debug|x64.Build.0 = Debug|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Debug|x86.Build.0 = Debug|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Release|x64.ActiveCfg = Release|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Release|x64.Build.0 = Release|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Release|x86.ActiveCfg = Release|Any CPU
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +128,9 @@ Global
 		{EDCF3CFF-3B39-4F13-B5BF-A4C47A92AE20} = {119415DE-6D4C-4623-BB2D-26C6B377042D}
 		{47CFA1B3-63F3-4959-94EB-E776C0CB1D11} = {D91E2F72-0CC6-4875-821F-84FC47A04505}
 		{4B7FE070-324E-42EE-BA3B-6F297B257959} = {EDCF3CFF-3B39-4F13-B5BF-A4C47A92AE20}
+		{C54D272F-C432-4C53-B62A-51C21731BEF3} = {119415DE-6D4C-4623-BB2D-26C6B377042D}
+		{2A347AD7-20F6-4143-88AE-27FDC338F972} = {C54D272F-C432-4C53-B62A-51C21731BEF3}
+		{F6F78B28-B6F5-4F45-BDC1-73EC54EBD226} = {C54D272F-C432-4C53-B62A-51C21731BEF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1530312F-B477-4A3D-BCC0-D4D8A9B3BBC8}

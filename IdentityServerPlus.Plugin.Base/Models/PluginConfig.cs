@@ -11,6 +11,7 @@ namespace IdentityServerPlus.Plugin.Base.Models
     public class PluginConfig
     {
         public string Assembly { get; set; }
+        public string[] Assemblies { get; set; }
         public List<PluginConfigurationSource> ConfigurationSources { get; set; }
     }
 
