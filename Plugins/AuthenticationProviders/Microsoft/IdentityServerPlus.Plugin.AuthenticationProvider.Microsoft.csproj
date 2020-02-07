@@ -10,7 +10,10 @@
     <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
+    <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" >
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Update="plugin.json">
