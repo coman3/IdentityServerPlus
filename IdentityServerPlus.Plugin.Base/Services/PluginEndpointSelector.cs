@@ -74,6 +74,7 @@ namespace IdentityServerPlus.Plugin.Base.Services
 
         private int GetIndexForMatch(CandidateState state)
         {
+            //TODO: Cache this, as this will always be the same once loaded
             var position = state.Endpoint.DisplayName.IndexOf('(');
             var type = state.Endpoint.DisplayName.Substring(position + 1, state.Endpoint.DisplayName.IndexOf(')') - position - 1);
             var ass = _pluginManager.PluginInstances.FirstOrDefault(x => x.Assembly.FullName.Contains(type));
