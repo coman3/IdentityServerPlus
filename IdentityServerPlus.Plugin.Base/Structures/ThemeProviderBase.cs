@@ -1,5 +1,6 @@
 ﻿using IdentityServerPlus.Plugin.Base.Interfaces;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace IdentityServerPlus.Plugin.Base.Structures
             foreach (var ass in GetViewAssemblies())
             {
                 builder.PartManager.ApplicationParts.Insert(0, new AssemblyPart(ass));
+                builder.PartManager.ApplicationParts.Insert(0, new CompiledRazorAssemblyPart(ass));
             }
             builder.AddControllersAsServices();
         }

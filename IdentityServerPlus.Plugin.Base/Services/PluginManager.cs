@@ -238,44 +238,17 @@ namespace IdentityServerPlus.Plugin.Base.Services
         {
             _logger.LogInformation("Building Theme Providers...");
 
-
-            var assembilies = new List<KeyValuePair<int, Assembly[]>>();
             foreach (var plugin in PluginInstances)
             {
                 foreach (var provider in plugin.Providers.OfType<IThemeProvider>().OrderBy(x=> x.Index))
                 {
-                    
                     if (provider == null) continue;
                     _logger.LogInformation("    Building Theme Provider...");
                     provider.ConfigureRazor(builder);                    
                 }
             }
 
-            //foreach (var provider in assembilies.OrderBy(x=> x.Key))
-            //{
-            //    builder.ConfigureApplicationPartManager(options =>
-            //    {
-            //        foreach (var ass in provider.Value)
-            //        {
-            //            foreach (var b in new CompiledRazorAssemblyApplicationPartFactory().GetApplicationParts(ass))
-            //            {
-            //                // insert at the top of the stack, so that these views are found first over the default
-            //                options.ApplicationParts.Insert(0, b);
-            //            }
-            //        }
-            //    });
-            //}
-
-            //foreach (var plugin in PluginInstances)
-            //{
-            //    foreach (var provider in plugin.Providers.OfType<IThemeProvider>())
-            //    {
-            //        if (provider == null) continue;
-                    
-            //    }
-            //}
             builder.Services.AddSingleton<EndpointSelector, PluginEndpointSelector>();
-            //builder.Services.AddSingleton<IControllerActivator, PluginServiceBasedControllerActivator>();
             _logger.LogInformation("Built all Theme Providers!");
             LogLoadedAssemblies();
             return builder;
