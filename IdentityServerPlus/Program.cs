@@ -25,6 +25,7 @@ namespace IdentityServer
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Verbose)
                 .MinimumLevel.Override("System", LogEventLevel.Verbose)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Verbose)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker", LogEventLevel.Debug)
                 .Enrich.FromLogContext()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss}][{Level}][{SourceContext}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Literate)
                 .CreateLogger();

@@ -47,9 +47,9 @@ namespace IdentityServer
             PluginManager.CollectAll();
             services.AddSingleton(PluginManager);
 
-            var mvcBuilder = services.AddMvc().AddControllersAsServices();
+            var mvcBuilder = services.AddMvc();
             mvcBuilder = PluginManager.BuildThemeProviders(mvcBuilder);
-
+            mvcBuilder.AddControllersAsServices();
 
             services.AddOptions();
             services.AddSingleton<IConfiguration>(Configuration);

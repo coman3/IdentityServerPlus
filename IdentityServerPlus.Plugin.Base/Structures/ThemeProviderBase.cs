@@ -22,7 +22,6 @@ namespace IdentityServerPlus.Plugin.Base.Structures
                 builder.PartManager.ApplicationParts.Insert(0, new AssemblyPart(ass));
                 builder.PartManager.ApplicationParts.Insert(0, new CompiledRazorAssemblyPart(ass));
             }
-            builder.AddControllersAsServices();
         }
         public abstract Assembly[] GetViewAssemblies();
     }
