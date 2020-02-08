@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServerPlus.Plugin.Base.Interfaces
 {
-    public interface IAuthenticationProvider
+    public interface IAuthenticationProvider : IPluginProvider
     {
         string Scheme { get; }
         string FriendlyName { get; }

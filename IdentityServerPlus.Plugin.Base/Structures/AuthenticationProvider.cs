@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace IdentityServerPlus.Plugin.Base.Structures
 {
-    public abstract class AuthenticationProvider : IPluginProvider, IAuthenticationProvider
+    public abstract class AuthenticationProvider : IAuthenticationProvider
     {
         public string FriendlyName { get; set; }
 

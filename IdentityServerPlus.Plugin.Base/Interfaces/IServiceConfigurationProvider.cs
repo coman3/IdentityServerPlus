@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IdentityServerPlus.Plugin.Base.Interfaces
 {
-    public interface IServiceConfigurationProvider
+    public interface IServiceConfigurationProvider : IPluginProvider
     {
         void ConfigureServices(IServiceCollection services);
     }

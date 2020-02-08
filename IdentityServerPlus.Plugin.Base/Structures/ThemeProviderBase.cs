@@ -9,7 +9,7 @@ using System.Text;
 
 namespace IdentityServerPlus.Plugin.Base.Structures
 {
-    public abstract class ThemeProviderBase : IThemeProvider, IPluginProvider
+    public abstract class ThemeProviderBase : IThemeProvider
     {
         public abstract int Index { get; }
         public abstract string Name { get; }

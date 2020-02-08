@@ -22,4 +22,12 @@
     <ProjectReference Include="..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
     <ProjectReference Include="..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" AfterTargets="PreBuildEvent">
+    <Exec Command="IF exist &quot;$(TargetDir)wwwroot&quot; (rm &quot;$(TargetDir)wwwroot&quot; -r -f)" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="IF exist &quot;wwwroot\**&quot; (xcopy &quot;wwwroot\**&quot; &quot;$(TargetDir)wwwroot\&quot; /E /C /Y)" />
+  </Target>
 </Project>
