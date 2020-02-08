@@ -23,6 +23,7 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
         public override IEnumerable<ProviderItem> GetProviderTypesAndArguments()
         {
             yield return new ProviderItem<MicrosoftAuthenticationProvider>(Configuration);
+            yield return new ProviderItem<MicrosoftPartialThemeProvider>();
         }
     }
 }

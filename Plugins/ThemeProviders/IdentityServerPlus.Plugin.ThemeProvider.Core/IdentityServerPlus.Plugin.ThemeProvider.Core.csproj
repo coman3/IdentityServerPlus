@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="plugin.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="plugin.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
