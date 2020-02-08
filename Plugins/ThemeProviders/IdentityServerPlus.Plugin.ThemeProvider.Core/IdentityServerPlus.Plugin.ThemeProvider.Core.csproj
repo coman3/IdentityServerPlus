@@ -1,30 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <UserSecretsId>ae5158b5-6d73-4b1b-a1de-a11c06ced8a8</UserSecretsId>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
+    <Content Remove="plugin.json" />
   </ItemGroup>
+
   <ItemGroup>
+    <None Include="plugin.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\IdentityServerPlus\IdentityServerPlus.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
   </ItemGroup>
+
   <ItemGroup>
-    <None Update="plugin.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="plugin.private.settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="plugin.settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
@@ -33,8 +40,9 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir &quot;$(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\&quot;" />
-    <Exec Command="IF exist &quot;wwwroot\**&quot; (mkdir &quot;$(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\wwwroot&quot;)"/>
-    <Exec Command="xcopy &quot;$(OutDir)**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\&quot; /E /C"/>
+    <Exec Command="IF exist &quot;wwwroot\**&quot; (mkdir &quot;$(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\wwwroot&quot;)" />
+    <Exec Command="xcopy &quot;$(OutDir)**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\&quot; /E /C" />
     <Exec Command="IF exist &quot;wwwroot\**&quot; (xcopy &quot;wwwroot\**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\wwwroot\&quot; /E /C)" />
   </Target>
+
 </Project>

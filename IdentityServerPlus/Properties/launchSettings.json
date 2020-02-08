@@ -2,6 +2,7 @@
   "profiles": {
     "SelfHost": {
       "commandName": "Project",
+      "workingDirectory": "$(TargetDir)",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

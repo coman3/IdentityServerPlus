@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServerPlus.Plugin.Base.Structures
 {
-    public abstract class IdentityProvider : IPluginProvider, IIdentityServerProvider, IServiceConfigurationProvider
+    public abstract class IdentityProvider : IIdentityServerProvider, IServiceConfigurationProvider
     {
         public string Name { get; set; }
         public IdentityProviderType Type { get; set; }

@@ -6,9 +6,8 @@ using System.Text;
 
 namespace IdentityServerPlus.Plugin.Base.Interfaces
 {
-    public interface IIdentityServerProvider
+    public interface IIdentityServerProvider : IPluginProvider
     {
-        string Name { get; }
         IdentityProviderType Type { get; }
 
         IIdentityServerBuilder Build(IIdentityServerBuilder builder);

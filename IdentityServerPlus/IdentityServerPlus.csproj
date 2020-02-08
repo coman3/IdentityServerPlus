@@ -10,7 +10,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Serilog" Version="2.9.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
@@ -20,4 +22,12 @@
     <ProjectReference Include="..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
     <ProjectReference Include="..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
   </ItemGroup>
+
+  <Target Name="PreBuild" AfterTargets="PreBuildEvent">
+    <Exec Command="IF exist &quot;$(TargetDir)wwwroot&quot; (rm &quot;$(TargetDir)wwwroot&quot; -r -f)" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="IF exist &quot;wwwroot\**&quot; (xcopy &quot;wwwroot\**&quot; &quot;$(TargetDir)wwwroot\&quot; /E /C /Y)" />
+  </Target>
 </Project>

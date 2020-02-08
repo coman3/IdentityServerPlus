@@ -4,6 +4,7 @@ using IdentityServerPlus.Plugin.Base.Structures;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -14,6 +15,7 @@ namespace IdentityServerPlus.Plugin.Base.Models
     {
         public Assembly Assembly { get; }
         public Type Type { get; }
+
         public string AssemblyLocation { get; internal set; }
         public bool Activated => Instance != null;
         public bool Injected { get; private set; }
