@@ -1,4 +1,7 @@
-﻿<html>
+﻿@using IdentityServerPlus.Plugin.Base.Services;
+@inject PluginManager PluginManager
+
+<html>
 <head>
     <title>IdentityServerPlus</title>
     <link href="~/css/base_ov.css" rel="stylesheet" type="text/css" />
@@ -8,6 +11,7 @@
     <div class="box">
         <partial name="_AnalyticsPartial" />
         <p>plugin status: @ViewBag.Plugin</p>
+        <p>instance Location: @PluginManager.GetPluginInstance().Instance.Name</p>
     </div>
 </body>
 </html>
