@@ -1,17 +1,17 @@
-﻿@using IdentityServerPlus.Plugin.Base.Services;
-@inject PluginManager PluginManager
-
-<html>
+﻿<html>
 <head>
     <title>IdentityServerPlus</title>
     <link href="~/css/base_ov.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    @RenderBody()
-    <div class="box">
-        <partial name="_AnalyticsPartial" />
-        <p>plugin status: @ViewBag.Plugin</p>
-        <p>instance Location: @PluginManager.GetPluginInstance().Instance.Name</p>
+    <div class="logo">
+        <img src="~/images/logo-light.svg"/>
     </div>
+    <div class="row">
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+    
 </body>
 </html>

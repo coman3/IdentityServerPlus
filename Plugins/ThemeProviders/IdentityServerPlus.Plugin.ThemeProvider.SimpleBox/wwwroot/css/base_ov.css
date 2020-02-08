@@ -1,3 +1,36 @@
-﻿.box {
-    border: 1px solid red;
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    background-color: rgb(21, 39, 51);
+}
+
+.logo {
+    top: 70px;
+    left: 50%;
+    margin-left: -50px;
+    right: initial;
+    bottom: initial;
+    display: inline-block;
+    position: fixed;
+}
+
+    .logo img {
+        width: 100px;
+    }
+
+.row {
+    display: flex;
+    position: relative;
+    margin-left: 0;
+    margin-right: 0;
+    height: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.content {
+    padding: 35px 30px;
+    border-radius: 10px;
+    background-color: #fff;
+    max-width: 400px;
 }
