@@ -3,6 +3,8 @@
 <h1>You are now being returned to the application.</h1>
 <p>Once complete, you may close this tab</p>
 
+<a href="@Model.RedirectUrl">Click here</a> if you are not redirected automaticly.
+
 <meta http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
 <script type="text/javascript">
     window.location.href = document.querySelector("meta[http-equiv=refresh]").getAttribute("data-url");

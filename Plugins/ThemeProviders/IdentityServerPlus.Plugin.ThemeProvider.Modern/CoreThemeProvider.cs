@@ -8,15 +8,16 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace IdentityServerPlus.Plugin.ThemeProvider.Core
+namespace IdentityServerPlus.Plugin.ThemeProvider.Modern
 {
     public class CoreThemeProvider : ThemeProviderBase
     {
-        public override string Name => "Core Theme Provider";
+        public override string Name => "Modern Theme Provider";
 
-        public override string Description => "Provides the implementation of most authentication routes";
+        public override string Description => "Provides a simple modern theme that can be customized via config";
 
-        public override int Index => 0;
+        public override int Index => 2;
+
 
     }
 }

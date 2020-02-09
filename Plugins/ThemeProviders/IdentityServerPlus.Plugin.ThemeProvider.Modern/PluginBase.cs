@@ -4,16 +4,16 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 
-namespace IdentityServerPlus.Plugin.ThemeProvider.SimpleBox
+namespace IdentityServerPlus.Plugin.ThemeProvider.Modern
 {
-    public class SimpleBoxThemeProviderPlugin : PluginBase
+    public class CoreThemeProviderPlugin : PluginBase
     {
-        public override Guid Id => new Guid("5b1c16fc-2b22-4820-8ccc-3b26b7a3e224");
+        public override Guid Id => new Guid();
 
         public override DateTime LastUpdated => new DateTime(2020, 2, 7);
 
         private IConfiguration Configuration { get; }
-        public SimpleBoxThemeProviderPlugin() : base("SimpleBox Theme", "0.0.0.1")
+        public CoreThemeProviderPlugin() : base("Empty Theme", "0.0.0.1")
         {
             Configuration = null;
         }
@@ -21,7 +21,7 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.SimpleBox
 
         public override IEnumerable<ProviderItem> GetProviderTypesAndArguments()
         {
-            yield return new ProviderItem<SimpleBoxThemeProvider>();
+            yield return new ProviderItem<CoreThemeProvider>();
         }
     }
 }

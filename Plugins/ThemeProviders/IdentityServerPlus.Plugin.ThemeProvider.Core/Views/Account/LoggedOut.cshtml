@@ -1,7 +1,7 @@
-  
+
 @model LoggedOutViewModel
 
-@{ 
+@{
     // set this so the layout rendering sees an anonymous user
     ViewData["signed-out"] = true;
 }
@@ -15,8 +15,7 @@
     @if (Model.PostLogoutRedirectUri != null)
     {
         <div>
-            Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to the
-            <span>@Model.ClientName</span> application.
+            Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to <span>@Model.ClientName</span>.
         </div>
     }
 
@@ -26,10 +25,10 @@
     }
 </div>
 
-@section scripts
+@if (Model.AutomaticRedirectAfterSignOut)
 {
-    @if (Model.AutomaticRedirectAfterSignOut)
-    {
-        <script src="~/js/signout-redirect.js"></script>
-    }
+    <meta http-equiv="refresh" content="0;url=@Model.PostLogoutRedirectUri" data-url="@Model.PostLogoutRedirectUri">
+    <script type="text/javascript">
+        window.location.href = document.querySelector("meta[http-equiv=refresh]").getAttribute("data-url");
+    </script>
 }

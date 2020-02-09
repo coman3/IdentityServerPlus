@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:62735/",
-      "sslPort": 44323
+      "applicationUrl": "http://localhost:62734/",
+      "sslPort": 44348
     }
   },
   "profiles": {
@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IdentityServerPlus.Plugin.ThemeProvider.SimpleBox": {
+    "IdentityServerPlus.Plugin.ThemeProvider.Empty": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
