@@ -3,11 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Library</OutputType>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="plugin.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="plugin.json">
@@ -21,10 +18,6 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\IdentityServerPlus\IdentityServerPlus.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>

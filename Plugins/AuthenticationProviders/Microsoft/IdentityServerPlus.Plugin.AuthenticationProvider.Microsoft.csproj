@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Library</OutputType>
@@ -10,6 +10,10 @@
     <PackageReference Include="Microsoft.Graph" Version="1.21.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
@@ -27,14 +31,16 @@
     </None>
   </ItemGroup>
 
+
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="rm &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)&quot; -r -f" />
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir &quot;$(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\&quot;" />
-    <Exec Command="IF exist &quot;wwwroot\**&quot; (mkdir &quot;$(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\wwwroot&quot;)"/>
-    <Exec Command="xcopy &quot;$(OutDir)**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\&quot; /E /C"/>
-    <Exec Command="IF exist &quot;wwwroot\**&quot; (xcopy &quot;wwwroot\**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\wwwroot\&quot; /E /C)" />
+    <Exec Command="IF exist &quot;wwwroot\**&quot; (mkdir &quot;$(SolutionDir)\IdentityServerPlus\$(OutDir)\Plugins\$(ProjectName)\wwwroot&quot;)" />
+    <Exec Command="copy &quot;$(OutDir)**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\&quot; /Y" />
+    <Exec Command="IF exist &quot;wwwroot\**&quot; (copy &quot;wwwroot\**&quot; &quot;$(SolutionDir)IdentityServerPlus\$(OutDir)Plugins\$(ProjectName)\wwwroot\&quot; /E /C)" />
   </Target>
+
 </Project>
