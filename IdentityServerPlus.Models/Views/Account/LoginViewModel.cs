@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace IdentityServer.Models
+namespace IdentityServer.Models.Views
 {
     public class LoginViewModel : LoginInputModel
     {

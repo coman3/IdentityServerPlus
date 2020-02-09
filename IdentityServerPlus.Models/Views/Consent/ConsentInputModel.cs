@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace IdentityServer.Models {
+namespace IdentityServer.Models.Views {
     public class ConsentInputModel {
         public string Button { get; set; }
         public IEnumerable<string> ScopesConsented { get; set; }

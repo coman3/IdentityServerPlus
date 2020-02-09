@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServer.Models {
+namespace IdentityServer.Models.Views
+{
     public class RegisterViewModel {
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2}, at max {1} characters long and unique.", MinimumLength = 2)]

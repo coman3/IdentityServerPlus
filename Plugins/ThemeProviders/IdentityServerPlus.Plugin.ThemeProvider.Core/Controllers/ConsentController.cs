@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer.Attributes;
-using IdentityServer.Models;
+using IdentityServer.Models.Attributes;
+using IdentityServer.Models.Views;
 using IdentityServer.Models.Config;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;

@@ -1,4 +1,5 @@
-namespace IdentityServer.Models {
+namespace IdentityServer.Models.Views
+{
     public class LoggedOutViewModel {
         public string PostLogoutRedirectUri { get; set; }
         public string ClientName { get; set; }

@@ -1,4 +1,5 @@
-namespace IdentityServer.Models {
+namespace IdentityServer.Models.Views
+{
     public class ProcessConsentResult {
         public bool IsRedirect => RedirectUri != null;
         public string RedirectUri { get; set; }

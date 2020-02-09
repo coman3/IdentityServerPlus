@@ -1,4 +1,5 @@
-namespace IdentityServer.Models {
+namespace IdentityServer.Models.Views
+{
     public class ScopeViewModel {
         public string Name { get; set; }
         public string DisplayName { get; set; }

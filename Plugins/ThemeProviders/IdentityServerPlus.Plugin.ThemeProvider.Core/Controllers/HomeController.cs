@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using IdentityServer.Attributes;
-using IdentityServer.Models;
+using IdentityServer.Models.Attributes;
+using IdentityServer.Models.Views;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +42,17 @@ namespace IdentityServerPlus.Controllers
             // retrieve error details from identityserver
             var message = await _interaction.GetErrorContextAsync(errorId);
             if (message != null) {
-                vm.Error = message;
+                vm.Error = new ErrorMessage()
+                {
+                    DisplayMode = message.DisplayMode,
+                    UiLocales = message.UiLocales,
+                    Error = message.Error,
+                    ErrorDescription = message.ErrorDescription,
+                    RequestId = message.RequestId,
+                    RedirectUri = message.RedirectUri,
+                    ResponseMode = message.ResponseMode,
+                    ClientId = message.ClientId
+                };
 
                 if (!_environment.IsDevelopment()) {
                     // only show in development

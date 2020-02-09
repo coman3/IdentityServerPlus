@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
-namespace IdentityServer.Models {
+namespace IdentityServer.Models.Views
+{
     public class ConsentViewModel : ConsentInputModel {
         public string ClientName { get; set; }
         public string ClientUrl { get; set; }

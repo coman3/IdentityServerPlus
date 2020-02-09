@@ -22,6 +22,9 @@
     <ProjectReference Include="..\IdentityServerPlus.Models\IdentityServerPlus.Models.csproj" />
     <ProjectReference Include="..\IdentityServerPlus.Plugin.Base\IdentityServerPlus.Plugin.Base.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+  </ItemGroup>
 
   <Target Name="PreBuild" AfterTargets="PreBuildEvent">
     <Exec Command="IF exist &quot;$(TargetDir)wwwroot&quot; (rm &quot;$(TargetDir)wwwroot&quot; -r -f)" />

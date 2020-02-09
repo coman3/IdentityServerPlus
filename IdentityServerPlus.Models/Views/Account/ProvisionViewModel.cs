@@ -1,4 +1,4 @@
-namespace IdentityServer.Models.Account
+namespace IdentityServer.Models.Views
 {
     public class ProvisionViewModel
     {
