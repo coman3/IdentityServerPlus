@@ -69,8 +69,23 @@
                         <ul class="list-inline">
                             @foreach (var provider in Model.VisibleExternalProviders)
                             {
-                                <partial name="_ExternalLoginPartial" model="provider" />
-                                
+                                if (Engine.FindView(ViewContext, "_ExternalLoginPartial." + provider.AuthenticationScheme, false).Success)
+                                {
+                                    <partial name="@("_ExternalLoginPartial." + provider.AuthenticationScheme)" model="provider" />
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a class="btn btn-default"
+                                           asp-controller="External"
+                                           asp-action="Challenge"
+                                           asp-route-provider="@provider.AuthenticationScheme"
+                                           asp-route-returnUrl="@Model.ReturnUrl">
+                                            @provider.DisplayName
+                                        </a>
+                                    </li>
+                                }
+
                             }
                         </ul>
                     </div>

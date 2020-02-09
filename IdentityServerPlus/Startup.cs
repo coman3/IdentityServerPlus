@@ -50,9 +50,6 @@ namespace IdentityServer
             var mvcBuilder = services.AddMvc();
             mvcBuilder = PluginManager.BuildThemeProviders(mvcBuilder);
             mvcBuilder.AddControllersAsServices();
-#if DEBUG
-            mvcBuilder.AddRazorRuntimeCompilation();
-#endif
 
             services.AddOptions();
             services.AddSingleton<IConfiguration>(Configuration);

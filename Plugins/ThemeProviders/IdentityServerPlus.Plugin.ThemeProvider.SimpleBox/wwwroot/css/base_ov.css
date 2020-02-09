@@ -18,7 +18,7 @@
         width: 100px;
     }
 
-.row {
+.centeredbox {
     display: flex;
     position: relative;
     margin-left: 0;
