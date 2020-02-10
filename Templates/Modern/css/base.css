@@ -47,6 +47,7 @@ body {
 }
 
 .tab {
+    text-decoration: none;
     position: relative;
     display: block;
     float: left;

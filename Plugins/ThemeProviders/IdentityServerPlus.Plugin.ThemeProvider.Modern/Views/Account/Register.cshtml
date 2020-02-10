@@ -2,50 +2,149 @@
 @model RegisterViewModel
 @inject ICompositeViewEngine Engine
 
+
+
 <div class="section login">
-    <div class="tab login" id="login-tab">
-        <div class="title">
-            Login
-        </div>
-        <div class="form-container">
-            <form class="form" asp-action="Login">
-                <div class="form-input no-top">
-                    <input type="text" placeholder="Username" asp-for="Username" autofocus />
-                </div>
 
-                <div class="form-input">
-                    <input type="password" placeholder="Password" asp-for="Password" />
-                </div>
+    @if (Model.EnableLocalLogin)
+    {
+        <div class="tab login" id="login-tab">
+            <div class="title">
+                Login
+            </div>
 
-                <div class="form-input extra-spacing">
-                    <button class="button click-loader">Login</button>
-                </div>
-            </form>
+            <partial name="_ValidationSummary" />
+
+            <div class="form-container">
+                <form class="form" asp-action="Login">
+                    <div class="form-input no-top">
+                        <input type="text" autocomplete="username" placeholder="Username" asp-for="Username" autofocus />
+                    </div>
+
+                    <div class="form-input">
+                        <input type="password" autocomplete="current-password" placeholder="Password" asp-for="Password" />
+                    </div>
+
+                    <div class="form-input extra-spacing">
+                        <button class="button click-loader">Login</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    }
+
     <div class="tab signup active" id="signup-tab">
-        <div class="title">
-            Signup
-        </div>
-        <partial name="_ValidationSummary" />
-        <div class="form-container">
-            <form class="form" asp-action="Register">
-                <div class="form-input no-top">
-                    <input type="text" placeholder="Username" asp-for="Username" />
-                </div>
-                <div class="form-input">
-                    <input type="email" placeholder="Email" name="Email" asp-for="Email" />
-                </div>
 
-                <div class="form-input">
-                    <input type="password" placeholder="Password" asp-for="Password" />
-                </div>
+        @if (Model.EnableLocalLogin)
+        {
+            <div class="title">
+                Signup
+            </div>
+        }
+        else
+        {
+            <div class="title centered">
+                Continue with
+            </div>
+        }
+
+        @if (Model.EnableLocalLogin)
+        {
+            <div class="form-container">
+                <form class="form" asp-action="Register">
+                    <div class="form-input no-top)">
+                        <input type="text" placeholder="Username" autocomplete="username" id="Username_register" asp-for="Username" />
+                    </div>
+                    <div class="form-input">
+                        <input type="email" placeholder="Email" autocomplete="email" id="Email_register" asp-for="Email" />
+                    </div>
+
+                    <div class="form-input">
+                        <input type="password" autocomplete="new-password" placeholder="Password" id="Password_register" asp-for="Password" />
+                    </div>
 
 
-                <div class="form-input extra-spacing">
-                    <button class="button click-loader">Signup</button>
+                    <div class="form-input extra-spacing">
+                        <button class="button click-loader">Signup</button>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            var nonAddedProviders = new List<ExternalProvider>();
+            <ul class="external-list">
+                @foreach (var provider in Model.VisibleExternalProviders)
+                {
+                    if (Engine.FindView(ViewContext, "_ExternalLoginPartial." + provider.AuthenticationScheme, false).Success)
+                    {
+                        <partial name="@("_ExternalLoginPartial." + provider.AuthenticationScheme)" model="provider" />
+                    }
+                    else
+                    {
+                        nonAddedProviders.Add(provider);
+                    }
+                }
+            </ul>
+            if (nonAddedProviders.Count > 0)
+            {
+                <br />
+                <div class="external-list-other">
+                    @foreach (var provider in nonAddedProviders)
+                    {
+                        <a asp-controller="External"
+                           asp-action="Challenge"
+                           asp-route-provider="@provider.AuthenticationScheme"
+                           asp-route-returnUrl="@Model.ReturnUrl">
+                            @provider.DisplayName
+                        </a>
+                    }
                 </div>
-            </form>
-        </div>
+            }
+            <div class="spacer"></div>
+
+
+        }
     </div>
 </div>
+@if (Model.VisibleExternalProviders.Any() && Model.EnableLocalLogin)
+{
+    var nonAddedProviders = new List<ExternalProvider>();
+
+    <div class="section external">
+        <div class="subtext">
+            or continue with
+        </div>
+        <ul class="external-list">
+            @foreach (var provider in Model.VisibleExternalProviders)
+            {
+                if (Engine.FindView(ViewContext, "_ExternalLoginPartial." + provider.AuthenticationScheme, false).Success)
+                {
+                    <partial name="@("_ExternalLoginPartial." + provider.AuthenticationScheme)" model="provider" />
+                }
+                else
+                {
+                    nonAddedProviders.Add(provider);
+                }
+            }
+        </ul>
+        @if (nonAddedProviders.Count > 0)
+        {
+            <div class="external-list-other">
+                @foreach (var provider in nonAddedProviders)
+                {
+                    <a asp-controller="External"
+                       asp-action="Challenge"
+                       asp-route-provider="@provider.AuthenticationScheme"
+                       asp-route-returnUrl="@Model.ReturnUrl">
+                        @provider.DisplayName
+                    </a>
+                }
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/base.js" type="text/javascript"></script>
+}

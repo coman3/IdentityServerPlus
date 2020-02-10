@@ -3,6 +3,9 @@
 var loginTab, signupTab, clickLoaders = null;
 
 function onLoad() {
+    window.addEventListener("popstate", function (event) {
+        event.preventDefault();
+    });
 
     setTimeout(function () {
         document.getElementsByTagName("body")[0].className = "";
@@ -16,12 +19,15 @@ function onLoad() {
         if (!hasClass(loginTab, "active")) {
             loginTab.className += " active";
             signupTab.className = signupTab.className.replace(" active", "");
+            window.history.pushState({ id: "register" }, "", "/Account/Login");
         }
     });
     signupTab.addEventListener("click", function () {
         if (!hasClass(signupTab, "active")) {
             signupTab.className += " active";
             loginTab.className = loginTab.className.replace(" active", "");
+            window.history.pushState({ id:"register" }, "", "/Account/Register");
+
         }
     });
 

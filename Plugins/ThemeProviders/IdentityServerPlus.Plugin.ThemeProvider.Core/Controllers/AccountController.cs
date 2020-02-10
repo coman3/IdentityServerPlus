@@ -81,7 +81,7 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginInputModel model, string button)
+        public async Task<IActionResult> Login(AuthenticateViewModel model, string button)
         {
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
@@ -164,7 +164,8 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Register(string returnUrl)
         {
-            return View(new RegisterViewModel() { ReturnUrl = returnUrl });
+            var viewModel = await BuildLoginViewModelAsync(returnUrl);
+            return View(new RegisterViewModel(viewModel));
         }
 
         [HttpPost]
@@ -199,6 +200,10 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
                 ModelState.TryAddModelError(error.Code, error.Description);
             }
 
+            var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
+            model.ExternalProviders = vm.ExternalProviders;
+            model.AllowRememberLogin = vm.AllowRememberLogin;
+            model.EnableLocalLogin = vm.EnableLocalLogin;
             return View(model);
 
         }
@@ -259,7 +264,7 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
-        private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
+        private async Task<AuthenticateViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (context?.IdP != null)
@@ -267,7 +272,7 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
                 var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
 
                 // this is meant to short circuit the UI and only trigger the one external IdP
-                var vm = new LoginViewModel
+                var vm = new AuthenticateViewModel
                 {
                     EnableLocalLogin = local,
                     ReturnUrl = returnUrl,
@@ -307,7 +312,7 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
                 }
             }
 
-            return new LoginViewModel
+            return new AuthenticateViewModel
             {
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
@@ -317,7 +322,7 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
             };
         }
 
-        private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
+        private async Task<AuthenticateViewModel> BuildLoginViewModelAsync(AuthenticateViewModel model)
         {
             var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
             vm.Username = model.Username;

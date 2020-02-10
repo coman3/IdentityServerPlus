@@ -48,6 +48,27 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
                          return null;
                      }
                  };
+             }).AddOpenIdConnect("microsoft_office365", options =>
+             {
+                 options.SaveTokens = true;
+                 options.Scope.Add("profile");
+                 options.Scope.Add("User.Read");
+                 options.Scope.Add("offline_access");
+                 options.ResponseType = "id_token token";
+                 options.ClientId = Configuration["ClientId"];
+                 options.ClientSecret = Configuration["ClientSecret"];
+                 options.MetadataAddress = "https://login.microsoftonline.com/" + Configuration["TenantId"] + "/v2.0/.well-known/openid-configuration";
+                 options.Authority = "https://login.microsoftonline.com/" + Configuration["TenantId"];
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidAudience = Configuration["ClientId"],
+                     IssuerValidator = (issuer, securityToken, validationParameters) =>
+                     {
+                         if (issuer.StartsWith("https://login.microsoftonline.com/") && issuer.EndsWith("/v2.0"))
+                             return issuer;
+                         return null;
+                     }
+                 };
              });
         }
 

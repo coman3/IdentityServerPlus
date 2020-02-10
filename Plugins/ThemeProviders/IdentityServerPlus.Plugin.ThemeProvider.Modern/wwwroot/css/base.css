@@ -49,6 +49,7 @@ body {
 }
 
 .tab {
+    text-decoration: none;
     position: relative;
     display: block;
     float: left;
@@ -95,6 +96,9 @@ body {
         border-top: solid 2px white;
         border-right: solid 2px white;
         background-color: transparent;
+    }
+    .tab .title.centered {
+        text-align: center;
     }
 
     .tab .form-container {
@@ -307,6 +311,10 @@ body {
         border-radius: 3px;
         color: white;
     }
+
+.spacer {
+    height: 75px; content: '';
+}
 
 .sbl-circ-path {
     margin-top: 10px;
