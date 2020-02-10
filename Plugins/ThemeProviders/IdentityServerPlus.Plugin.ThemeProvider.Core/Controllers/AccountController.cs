@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
 {
@@ -65,6 +66,10 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
+            if (User.IsAuthenticated())
+            {
+                return RedirectToAction("Index", "Home");
+            }
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
 
@@ -165,6 +170,10 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
         [HttpGet]
         public async Task<IActionResult> Register(string returnUrl)
         {
+            if (User.IsAuthenticated())
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var viewModel = await BuildLoginViewModelAsync(returnUrl);
             return View(new RegisterViewModel(viewModel));
         }
