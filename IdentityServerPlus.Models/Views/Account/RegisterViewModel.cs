@@ -5,7 +5,7 @@ namespace IdentityServer.Models.Views
     public class RegisterViewModel : AuthenticateViewModel
     {
         [Required]
-        [StringLength(50, ErrorMessage = "The {0} must be at least {2}, at max {1} characters long and unique.", MinimumLength = 2)]
+        [StringLength(50, ErrorMessage = "Must be between 2 and 50 characters", MinimumLength = 2)]
         [Display(Name = "Username")]
         public override string Username { get; set; }
 
@@ -15,14 +15,14 @@ namespace IdentityServer.Models.Views
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(128, ErrorMessage = "Must be between 6 and 128 characters", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public override string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
 
 

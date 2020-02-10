@@ -13,8 +13,6 @@
                 Login
             </div>
 
-            <partial name="_ValidationSummary" />
-
             <div class="form-container">
                 <form class="form" asp-action="Login">
                     <div class="form-input no-top">
@@ -52,14 +50,38 @@
         {
             <div class="form-container">
                 <form class="form" asp-action="Register">
-                    <div class="form-input no-top)">
+                    @{
+                        var usernameValidation = ViewContext.ModelState.FirstOrDefault(x => x.Key == nameof(Model.Username)).Value;
+                        var emailValidation = ViewContext.ModelState.FirstOrDefault(x => x.Key == nameof(Model.Email)).Value;
+                        var passwordValidation = ViewContext.ModelState.FirstOrDefault(x => x.Key == nameof(Model.Password)).Value;
+
+                    }
+                    <div class="form-input no-top @(usernameValidation == null  ? "" : "danger")">
+                        @if (usernameValidation != null)
+                        {
+                            <div class="message">
+                                @usernameValidation.Errors.First().ErrorMessage
+                            </div>
+                        }
                         <input type="text" placeholder="Username" autocomplete="username" id="Username_register" asp-for="Username" />
                     </div>
-                    <div class="form-input">
+                    <div class="form-input @(emailValidation == null ? "" : "danger")">
+                        @if (emailValidation != null)
+                        {
+                            <div class="message">
+                                @emailValidation.Errors?.First().ErrorMessage
+                            </div>
+                        }
                         <input type="email" placeholder="Email" autocomplete="email" id="Email_register" asp-for="Email" />
                     </div>
 
-                    <div class="form-input">
+                    <div class="form-input @(passwordValidation == null ? "" : "danger")">
+                        @if (passwordValidation != null)
+                        {
+                            <div class="message">
+                                @passwordValidation.Errors.First().ErrorMessage
+                            </div>
+                        }
                         <input type="password" autocomplete="new-password" placeholder="Password" id="Password_register" asp-for="Password" />
                     </div>
 

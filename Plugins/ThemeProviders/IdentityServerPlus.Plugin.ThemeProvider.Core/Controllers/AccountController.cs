@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
 {
@@ -172,38 +173,53 @@ namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
-            }
-            var user = new ApplicationUser()
-            {
-                Email = model.Email,
-                Username = model.Username,
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(JwtClaimTypes.Subject, user.Id.ToString()));
-                await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(JwtClaimTypes.IdentityProvider, "local"));
-
-                if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                if (await _userManager.FindByNameAsync(model.Username) != null)
                 {
-                    await _signInManager.SignInAsync(user, new AuthenticationProperties());
-                    return Redirect(model.ReturnUrl);
+                    ModelState.AddModelError(nameof(model.Username), "Already in use");
                 }
-                return RedirectToAction("Login");
+                else if (await _userManager.FindByEmailAsync(model.Email) != null)
+                {
+                    ModelState.AddModelError(nameof(model.Email), "Already in use");
+                }
             }
-            foreach (var error in result.Errors)
+
+            // Recheck the model state to ensure that the user does not exsist
+            if (ModelState.IsValid) 
             {
-                ModelState.TryAddModelError(error.Code, error.Description);
+                var user = new ApplicationUser()
+                {
+                    Email = model.Email,
+                    Username = model.Username,
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(JwtClaimTypes.Subject, user.Id.ToString()));
+                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim(JwtClaimTypes.IdentityProvider, "local"));
+
+                    if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                    {
+                        await _signInManager.SignInAsync(user, new AuthenticationProperties());
+                        return Redirect(model.ReturnUrl);
+                    }
+                    return RedirectToAction("Login");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
             }
+
+
 
             var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
             model.ExternalProviders = vm.ExternalProviders;
             model.AllowRememberLogin = vm.AllowRememberLogin;
             model.EnableLocalLogin = vm.EnableLocalLogin;
+
             return View(model);
 
         }

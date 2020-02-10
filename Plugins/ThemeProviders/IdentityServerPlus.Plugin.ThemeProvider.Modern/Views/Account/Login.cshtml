@@ -25,11 +25,27 @@
         {
             <div class="form-container">
                 <form class="form" asp-action="Login">
-                    <div class="form-input no-top">
+                    @{
+                        var usernameValidation = ViewContext.ModelState.FirstOrDefault(x => x.Key == nameof(Model.Username)).Value;
+                        var passwordValidation = ViewContext.ModelState.FirstOrDefault(x => x.Key == nameof(Model.Password)).Value;
+                    }
+                    <div class="form-input no-top @(usernameValidation == null ? "" : "danger")">
+                        @if (usernameValidation != null)
+                        {
+                            <div class="message">
+                                @usernameValidation.Errors.First().ErrorMessage
+                            </div>
+                        }
                         <input type="text" autocomplete="username" placeholder="Username" asp-for="Username" autofocus />
                     </div>
 
-                    <div class="form-input">
+                    <div class="form-input @(passwordValidation == null ? "" : "danger")">
+                        @if (passwordValidation != null)
+                        {
+                            <div class="message">
+                                @passwordValidation.Errors.First().ErrorMessage
+                            </div>
+                        }
                         <input type="password" autocomplete="current-password" placeholder="Password" asp-for="Password" />
                     </div>
 

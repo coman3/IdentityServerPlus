@@ -96,6 +96,10 @@ body {
     background-color: transparent;
 }
 
+.tab .title.centered {
+    text-align: center;
+}
+
 .tab .form-container {
     opacity: 0;
     pointer-events: none;
@@ -244,15 +248,33 @@ body {
     height: 35px;
     padding-left: 10px;
     line-height: 35px;
-    border-radius: 100px;
+    border-radius: 17px;
 }
 
 .form .form-input input:focus {
-    border-radius: 100px;
     outline: none;
     -webkit-box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
     -moz-box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
     box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+}
+
+.form .form-input .message {
+    display: none;
+}
+
+.form .form-input.danger .message {
+    display: block;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    color: rgba(255, 97, 54, 1);
+    font-size: x-small;
+    text-align: right;
+    margin-top: -16px;
+}
+
+.form .form-input.danger input {
+    border: solid 2px rgba(255, 97, 54, 1);
+    border-top-right-radius: 3px;
 }
 
 .external-list {
@@ -299,7 +321,6 @@ body {
 }
 
 .external-list-other a {
-    
     text-decoration: none;
     background-color: #474b4f;
     padding: 5px;
@@ -319,6 +340,11 @@ body {
     border-radius: 50%;
     border-right-color: #5a5a5a;
     animation: rotate 1s linear infinite;
+}
+
+.spacer {
+    height: 75px;
+    content: '';
 }
 
 @keyframes rotate {

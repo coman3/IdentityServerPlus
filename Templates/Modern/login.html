@@ -13,7 +13,7 @@
     <div class="container">
         <div class="bloc">
             <div class="section login">
-                <div class="tab login " id="login-tab">
+                <div class="tab login active" id="login-tab">
                     <div class="title">
                         Login
                     </div>
@@ -23,8 +23,11 @@
                                 <input type="text" placeholder="Username" name="Username" />
                             </div>
 
-                            <div class="form-input">
-                                <input type="password" placeholder="Password" name="Username" />
+                            <div class="form-input danger">
+                                <div class="message">
+                                    Password Incorrect
+                                </div>
+                                <input type="password" placeholder="Password" name="Username" />                                
                             </div>
 
                             <div class="form-input extra-spacing">
@@ -33,7 +36,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="tab signup active" id="signup-tab">
+                <div class="tab signup" id="signup-tab">
                     <div class="title">
                         Signup
                     </div>

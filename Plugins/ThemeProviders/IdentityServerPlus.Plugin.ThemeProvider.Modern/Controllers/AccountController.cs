@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using IdentityServerPlus.Plugin.Base.Helpers;
 
 namespace IdentityServer.Controllers
 {
@@ -46,10 +47,11 @@ namespace IdentityServer.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             ModelState.Clear();
-            model.ConfirmPassword = model.Password;            
+            model.ConfirmPassword = model.Password;
             TryValidateModel(model);
 
-            return await _accountController.Register(model);
+            return await _accountController.ExecuteWithStateAsync(this, x=> x.Register(model));
+
         }
     }
 }
