@@ -6,22 +6,22 @@ using System.Collections.Generic;
 
 namespace IdentityServerPlus.Plugin.ThemeProvider.Modern
 {
-    public class CoreThemeProviderPlugin : PluginBase
+    public class ModernThemeProviderPlugin : PluginBase
     {
         public override Guid Id => new Guid();
 
         public override DateTime LastUpdated => new DateTime(2020, 2, 7);
 
         private IConfiguration Configuration { get; }
-        public CoreThemeProviderPlugin() : base("Empty Theme", "0.0.0.1")
+
+        public ModernThemeProviderPlugin() : base("Modern Theme", "0.0.0.1")
         {
             Configuration = null;
         }
 
-
         public override IEnumerable<ProviderItem> GetProviderTypesAndArguments()
         {
-            yield return new ProviderItem<CoreThemeProvider>();
+            yield return new ProviderItem<ModernThemeProvider>();
         }
     }
 }

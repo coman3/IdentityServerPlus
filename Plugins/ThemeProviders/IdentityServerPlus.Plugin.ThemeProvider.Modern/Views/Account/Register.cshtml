@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Mvc.ViewEngines;
+@model RegisterViewModel
+@inject ICompositeViewEngine Engine
+
+<div class="section login">
+    <div class="tab login" id="login-tab">
+        <div class="title">
+            Login
+        </div>
+        <div class="form-container">
+            <form class="form" asp-action="Login">
+                <div class="form-input no-top">
+                    <input type="text" placeholder="Username" asp-for="Username" autofocus />
+                </div>
+
+                <div class="form-input">
+                    <input type="password" placeholder="Password" asp-for="Password" />
+                </div>
+
+                <div class="form-input extra-spacing">
+                    <button class="button click-loader">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="tab signup active" id="signup-tab">
+        <div class="title">
+            Signup
+        </div>
+        <partial name="_ValidationSummary" />
+        <div class="form-container">
+            <form class="form" asp-action="Register">
+                <div class="form-input no-top">
+                    <input type="text" placeholder="Username" asp-for="Username" />
+                </div>
+                <div class="form-input">
+                    <input type="email" placeholder="Email" name="Email" asp-for="Email" />
+                </div>
+
+                <div class="form-input">
+                    <input type="password" placeholder="Password" asp-for="Password" />
+                </div>
+
+
+                <div class="form-input extra-spacing">
+                    <button class="button click-loader">Signup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

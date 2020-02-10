@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Mvc.ViewEngines;
+@model LoginViewModel
+@inject ICompositeViewEngine Engine
+
+
+
+<div class="section login">
+    
+    <div class="tab login active" id="login-tab">
+        <div class="title">
+            Login
+        </div>
+        <partial name="_ValidationSummary" />
+        <div class="form-container">
+            <form class="form" asp-action="Login">
+                <div class="form-input no-top">
+                    <input type="text" placeholder="Username" asp-for="Username" autofocus />
+                </div>
+
+                <div class="form-input">
+                    <input type="password" placeholder="Password" asp-for="Password" />
+                </div>
+
+                <div class="form-input extra-spacing">
+                    <button class="button click-loader">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="tab signup" id="signup-tab">
+        <div class="title">
+            Signup
+        </div>
+        <div class="form-container">
+            <form class="form" asp-action="Register">
+                <div class="form-input no-top)">
+                    <input type="text" placeholder="Username" asp-for="Username" />
+                </div>
+                <div class="form-input">
+                    <input type="email" placeholder="Email" name="Email" />
+                </div>
+
+                <div class="form-input">
+                    <input type="password" placeholder="Password" asp-for="Password" />
+                </div>
+
+
+                <div class="form-input extra-spacing">
+                    <button class="button click-loader">Signup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@if (Model.VisibleExternalProviders.Any())
+{
+    var nonAddedProviders = new List<ExternalProvider>();
+
+    <div class="section external">
+        <div class="subtext">
+            or continue with
+        </div>
+        <ul class="external-list">
+            @foreach (var provider in Model.VisibleExternalProviders)
+            {
+                if (Engine.FindView(ViewContext, "_ExternalLoginPartial." + provider.AuthenticationScheme, false).Success)
+                {
+                    <partial name="@("_ExternalLoginPartial." + provider.AuthenticationScheme)" model="provider" />
+                }
+                else
+                {
+                    nonAddedProviders.Add(provider);
+                }
+            }
+        </ul>
+        @if (nonAddedProviders.Count > 0)
+        {
+            <div class="external-list-other">
+                @foreach (var provider in nonAddedProviders)
+                {
+                    <a asp-controller="External"
+                       asp-action="Challenge"
+                       asp-route-provider="@provider.AuthenticationScheme"
+                       asp-route-returnUrl="@Model.ReturnUrl" href="test">
+                        @provider.DisplayName
+                    </a>
+                }
+            </div>
+        }
+    </div>
+}

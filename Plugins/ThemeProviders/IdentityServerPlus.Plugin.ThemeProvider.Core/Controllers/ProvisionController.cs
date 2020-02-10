@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityServer.Controllers {
+namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
+{
     public class ProvisionController : Controller {
 
         private readonly UserManager<ApplicationUser> _userManager;

@@ -1,0 +1,365 @@
+﻿body {
+}
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .container .bloc {
+        width: 300px;
+        white-space: nowrap;
+        -webkit-box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.75);
+        -moz-box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.75);
+        box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.75);
+        border-radius: 3px;
+    }
+
+.bloc .section {
+    display: block;
+    clear: left;
+}
+
+.tab {
+    position: relative;
+    display: block;
+    float: left;
+    padding: 10px;
+    color: white;
+    -webkit-box-shadow: inset -2px 0px 3px 0px rgba(50, 50, 50, 0.5);
+    -moz-box-shadow: inset -2px 0px 3px 0px rgba(50, 50, 50, 0.5);
+    box-shadow: inset -2px 0px 3px 0px rgba(50, 50, 50, 0.5);
+    width: 38px;
+    transition: all 0.2s linear;
+    cursor: pointer;
+}
+
+    .tab.active {
+        width: 100%;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        transition: all 0.2s linear;
+        cursor: default;
+    }
+
+        .tab.active::after {
+            border-top: solid 2px white;
+            border-right: solid 2px white;
+            background-color: white;
+            transition: all 0.2s linear;
+            opacity: 0;
+        }
+
+    .tab.login::after {
+        transform: translateX(3px) translate(-50%, -50%) rotateZ(-135deg);
+    }
+
+    .tab::after {
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        width: 10px;
+        height: 10px;
+        margin: 0px;
+        transform: translateX(-2px) translate(-50%, -50%) rotateZ(45deg);
+        border-top: solid 2px white;
+        border-right: solid 2px white;
+        background-color: transparent;
+    }
+
+    .tab .form-container {
+        opacity: 0;
+        pointer-events: none;
+        cursor: pointer;
+        transition: all 0.2s linear;
+        overflow: hidden;
+    }
+
+    .tab.active .form-container {
+        opacity: 1;
+        display: flex;
+        pointer-events: all;
+        cursor: default;
+        transition: opacity 0.2s linear;
+    }
+
+    .tab .title {
+        font-weight: 500;
+        font-size: small;
+        transform: rotateZ(-90deg) translateX(-35px);
+        transition: all 0.2s linear;
+    }
+
+    .tab.active .title {
+        height: 75px;
+        line-height: 75px;
+        padding: 10px;
+        font-size: x-large;
+        transform: none;
+        transition: all 0.2s linear;
+    }
+
+    .tab.login {
+        border-top-left-radius: 3px;
+        background-color: #222629;
+    }
+
+    .tab.signup {
+        border-top-right-radius: 3px;
+        background-color: #474b4f;
+    }
+
+.section.external {
+    overflow: hidden;
+    z-index: 10;
+    position: relative;
+    background-color: #61892f;
+    padding: 30px 10px;
+    min-height: 100px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+    .section.external::before {
+        content: '';
+        z-index: -1;
+        position: absolute;
+        top: -10px;
+        left: -2px;
+        right: -2px;
+        height: 10px;
+        -webkit-box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.75);
+        -moz-box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.75);
+        box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.75);
+    }
+
+.section.login {
+    display: flex;
+    min-height: 300px;
+}
+
+.section.external .title {
+    color: white;
+}
+
+.section .subtext {
+    font-size: small;
+    text-align: center;
+    color: white;
+    padding: 5px;
+}
+
+.form-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-bottom: 75px;
+}
+
+.form {
+    padding: 10px;
+    width: 100%;
+}
+
+    .form .form-input {
+        padding-top: 20px;
+    }
+
+        .form .form-input button,
+        .form .form-input .button {
+            margin: 0;
+            width: 100%;
+            border: 0;
+            height: 35px;
+            line-height: 35px;
+            border-radius: 100px;
+            background-color: white;
+            text-align: center;
+            display: block;
+            color: black;
+            font-size: small;
+        }
+
+            .form .form-input button.round,
+            .form .form-input .button.round {
+                width: 35px;
+                height: 35px;
+                margin: 0 auto;
+                transition: all 0.2s ease-in-out;
+            }
+
+        .form .form-input.no-top {
+            padding-top: 0;
+        }
+
+        .form .form-input.extra-spacing {
+            padding-top: 60px;
+        }
+
+        .form .form-input button:focus,
+        .form .form-input .button:focus {
+            border-radius: 100px;
+            outline: none;
+            -webkit-box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+            -moz-box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+            box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+        }
+
+        .form .form-input input {
+            width: 100%;
+            border: 0;
+            height: 35px;
+            padding-left: 10px;
+            line-height: 35px;
+            border-radius: 100px;
+        }
+
+            .form .form-input input:focus {
+                border-radius: 100px;
+                outline: none;
+                -webkit-box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+                -moz-box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+                box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.25);
+            }
+
+.external-list {
+    display: inline-flex;
+    width: 100%;
+    list-style: none;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+    .external-list li {
+        margin: 5px;
+        border-radius: 100%;
+        width: 64px;
+        height: 64px;
+        background-color: white;
+        text-align: center;
+        line-height: 64px;
+        color: black;
+        cursor: pointer;
+    }
+
+    .external-list a {
+        cursor: pointer;
+    }
+
+    .external-list li img {
+        width: 32px;
+        height: 32px;
+        margin: 16px;
+        cursor: pointer;
+    }
+
+.external-list-other {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0;
+    padding-left: 0;
+    padding-top: 10px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+    .external-list-other a {
+        text-decoration: none;
+        background-color: #474b4f;
+        padding: 5px;
+        margin: 3px;
+        border-radius: 3px;
+        color: white;
+    }
+
+.sbl-circ-path {
+    margin-top: 10px;
+    height: 16px;
+    width: 16px;
+    color: rgba(90, 90, 90, 0.2);
+    position: relative;
+    display: inline-block;
+    border: 2px solid;
+    border-radius: 50%;
+    border-right-color: #5a5a5a;
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* --------------- Mobile --------------- */
+
+@media only screen and (max-width: 540px) {
+    .container {
+        display: block;
+    }
+
+        .container .bloc {
+            height: 100%;
+            width: 100%;
+            border-radius: 0;
+        }
+
+    .section.login {
+        min-height: 80%;
+        border-radius: 0;
+    }
+
+    .section.external {
+        min-height: 20%;
+        border-radius: 0;
+    }
+
+    .tab.login {
+        border-radius: 0;
+    }
+
+    .tab.signup {
+        border-radius: 0;
+    }
+}

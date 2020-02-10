@@ -28,6 +28,8 @@ namespace IdentityServer.Models.Attributes
                 //csp += "upgrade-insecure-requests;";
                 // also an example if you need client images to be displayed from twitter
                 // csp += "img-src 'self' https://pbs.twimg.com;";
+                csp += "style-src 'self' https://fonts.googleapis.com;";
+                csp += "font-src  https://fonts.gstatic.com;";
 
                 // once for standards compliant browsers
                 if (!context.HttpContext.Response.Headers.ContainsKey("Content-Security-Policy"))

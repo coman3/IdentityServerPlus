@@ -10,7 +10,7 @@ using System.Runtime.Loader;
 
 namespace IdentityServerPlus.Plugin.ThemeProvider.Modern
 {
-    public class CoreThemeProvider : ThemeProviderBase
+    public class ModernThemeProvider : ThemeProviderBase
     {
         public override string Name => "Modern Theme Provider";
 

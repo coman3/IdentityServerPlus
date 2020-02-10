@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServer.Controllers {
+namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
+{
     /// <summary>
     /// This controller processes the consent UI
     /// </summary>

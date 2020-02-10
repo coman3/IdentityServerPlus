@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServer.Controllers
+namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
 {
 
     [SecurityHeaders]

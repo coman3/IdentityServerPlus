@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace IdentityServerPlus.Controllers
+namespace IdentityServerPlus.Plugin.ThemeProvider.Core.Controllers
 {
     [SecurityHeaders]
     [AllowAnonymous]
