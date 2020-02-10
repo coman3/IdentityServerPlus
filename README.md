@@ -8,6 +8,9 @@ Primary Goals:
  - [ ] Faster than the crap that exsists today
   
 
+# Migrating to: https://github.com/IdentityServerPlus/IdentityServerPlus
+Please see up-to-date code, and issues there. Any new issues should be posted to the new repository
+
 # Status: In Dev
 This project is still heavly in development, will have breaking changes and is **NOT READY TO BE IN PRODUCTION**. Please see the project plan below to see what still needs to be implemented **before it can be tested for security** then marked as alpha.
 
