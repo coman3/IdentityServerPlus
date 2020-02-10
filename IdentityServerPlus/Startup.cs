@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
+using System.IO;
 using IdentityServer.Models;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
@@ -59,7 +61,7 @@ namespace IdentityServer
             var authentication = services.AddAuthentication();
             authentication = PluginManager.BuildAuthentication(authentication);
 
-            
+
 
             var identity = services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
                 {
@@ -86,7 +88,10 @@ namespace IdentityServer
             }
 
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
+            });
             app.UseRouting();
 
             app.UseIdentityServer();

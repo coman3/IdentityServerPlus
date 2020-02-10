@@ -1,5 +1,8 @@
-﻿
-@model dynamic
-
-<h1>@Model.DisplayName Partial</h1>
-<p>from MicrosoftPlugin</p>
+﻿@model ExternalProvider
+<li>
+    <a asp-controller="External"
+       asp-action="Challenge"
+       asp-route-provider="@Model.AuthenticationScheme">
+        <img src="~/img/common.svg" alt="Microsoft" />
+    </a>
+</li>

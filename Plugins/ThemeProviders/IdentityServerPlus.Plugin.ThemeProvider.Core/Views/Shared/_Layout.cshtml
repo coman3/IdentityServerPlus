@@ -1,0 +1,21 @@
+﻿
+<html>
+<head>
+    <title>IdentityServerPlus</title>
+    <link href="~/css/base.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    @RenderBody()
+
+    <hr />
+
+    @if (User.Identity.IsAuthenticated && (ViewData["signed-out"] as bool?) != true)
+    {
+        <p>Logged in as: @User.Identity.Name  <a asp-action="Logout" asp-controller="Account">Logout</a></p>
+    }
+    else
+    {
+        <p>Not Logged in. <a asp-action="Login" asp-controller="Account">Login</a></p>
+    }
+</body>
+</html>

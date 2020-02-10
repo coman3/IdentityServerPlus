@@ -18,14 +18,5 @@ namespace IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft
 
         public override int Index => -1;
 
-        public override Assembly[] GetViewAssemblies()
-        {
-            var currentAssembly = Assembly.GetAssembly(typeof(MicrosoftPartialThemeProvider));
-            return new[]
-            {
-                Assembly.LoadFrom(Path.Combine(new FileInfo(currentAssembly.Location).DirectoryName, "IdentityServerPlus.Plugin.AuthenticationProvider.Microsoft.Views.dll")),
-                currentAssembly
-        };
-        }
     }
 }
